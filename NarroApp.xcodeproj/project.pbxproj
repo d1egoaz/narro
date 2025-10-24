@@ -525,7 +525,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = 0.0.1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.voicetypestudio.app.debug.23;
+				PRODUCT_BUNDLE_IDENTIFIER = ca.diegoa.narro.debug;
 				PRODUCT_NAME = Narro;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -554,7 +554,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = 0.0.1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.voicetypestudio.app;
+				PRODUCT_BUNDLE_IDENTIFIER = ca.diegoa.narro;
 				PRODUCT_NAME = Narro;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
