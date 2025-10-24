@@ -8,7 +8,7 @@ struct ContentView: View {
         VStack(spacing: 16) {
             // Header
             HStack {
-                Text("VTS")
+                Text("Narro")
                     .font(.title2)
                     .fontWeight(.bold)
                 Spacer()

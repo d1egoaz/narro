@@ -253,7 +253,7 @@ struct NotificationPermissionCard: View {
 extension NotificationManager {
     func showTestNotification() async {
         let content = UNMutableNotificationContent()
-        content.title = "VTS Test Notification"
+        content.title = "Narro Test Notification"
         content.body = "🎉 Notifications are working perfectly! You'll be notified about transcription events."
         content.sound = .default
         

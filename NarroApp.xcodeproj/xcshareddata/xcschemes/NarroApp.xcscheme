@@ -16,9 +16,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1A8E3D252C8F4E1B00123456"
-               BuildableName = "VTS.app"
-               BlueprintName = "VTSApp"
-               ReferencedContainer = "container:VTSApp.xcodeproj">
+               BuildableName = "Narro.app"
+               BlueprintName = "NarroApp"
+               ReferencedContainer = "container:NarroApp.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -45,9 +45,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1A8E3D252C8F4E1B00123456"
-            BuildableName = "VTS.app"
-            BlueprintName = "VTSApp"
-            ReferencedContainer = "container:VTSApp.xcodeproj">
+            BuildableName = "Narro.app"
+            BlueprintName = "NarroApp"
+            ReferencedContainer = "container:NarroApp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -62,9 +62,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1A8E3D252C8F4E1B00123456"
-            BuildableName = "VTS.app"
-            BlueprintName = "VTSApp"
-            ReferencedContainer = "container:VTSApp.xcodeproj">
+            BuildableName = "Narro.app"
+            BlueprintName = "NarroApp"
+            ReferencedContainer = "container:NarroApp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

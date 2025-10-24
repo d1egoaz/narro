@@ -97,7 +97,7 @@ struct OnboardingAccessibilityStep: View {
                         }
                         .buttonStyle(.plain)
                         
-                        Text("This will open System Settings where you can enable VTS in Privacy & Security > Accessibility")
+                        Text("This will open System Settings where you can enable Narro in Privacy & Security > Accessibility")
                             .font(.caption)
                             .foregroundColor(.secondary)
                             .multilineTextAlignment(.center)
@@ -108,7 +108,7 @@ struct OnboardingAccessibilityStep: View {
                             .font(.subheadline)
                             .fontWeight(.medium)
                         
-                        Text("• You can still use VTS for voice transcription\n• Transcribed text can be copied to clipboard\n• You'll need to paste manually with ⌘V")
+                        Text("• You can still use Narro for voice transcription\n• Transcribed text can be copied to clipboard\n• You'll need to paste manually with ⌘V")
                             .font(.caption)
                             .foregroundColor(.secondary)
                             .multilineTextAlignment(.center)

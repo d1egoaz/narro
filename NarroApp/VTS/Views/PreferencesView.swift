@@ -412,7 +412,7 @@ struct PreferencesView: View {
                 
                 GroupBox("How It Works") {
                     VStack(alignment: .leading, spacing: 12) {
-                        Text("VTS works like native macOS dictation:")
+                        Text("Narro works like native macOS dictation:")
                             .font(.headline)
                         
                         if appState.hotkeyManagerService.currentHotkeyString == SimpleHotkeyManager.NO_HOTKEY_SET {
@@ -470,7 +470,7 @@ struct PreferencesView: View {
                             }
                         }
                         
-                        Text("Accessibility permission allows VTS to insert text directly into any application, just like built-in dictation.")
+                        Text("Accessibility permission allows Narro to insert text directly into any application, just like built-in dictation.")
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
@@ -487,7 +487,7 @@ struct PreferencesView: View {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text("Launch at Login")
                                     .font(.headline)
-                                Text(appState.launchAtLoginManagerService.isEnabled ? "VTS will start automatically when you log in" : "Start VTS manually")
+                                Text(appState.launchAtLoginManagerService.isEnabled ? "Narro will start automatically when you log in" : "Start Narro manually")
                                     .font(.caption)
                                     .foregroundColor(.secondary)
                             }
@@ -565,7 +565,7 @@ struct PreferencesView: View {
                         }
                         
                         VStack(alignment: .leading, spacing: 4) {
-                            Text("• The shortcut works system-wide, even when VTS is not the active application")
+                            Text("• The shortcut works system-wide, even when Narro is not the active application")
                             Text("• Current shortcut: \(appState.hotkeyManagerService.currentHotkeyString)")
                             Text("• Click in the recorder above to set a new shortcut")
                         }

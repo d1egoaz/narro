@@ -31,7 +31,7 @@ struct OnboardingMicrophoneStep: View {
                     .font(.largeTitle)
                     .fontWeight(.bold)
                 
-                Text("VTS needs access to your microphone to record audio for speech-to-text transcription")
+                Text("Narro needs access to your microphone to record audio for speech-to-text transcription")
                     .font(.title3)
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
@@ -43,14 +43,14 @@ struct OnboardingMicrophoneStep: View {
                 MicrophonePermissionCard(
                     status: captureEngine.permissionStatus,
                     title: "Microphone Permission",
-                    grantedMessage: "✅ Microphone access granted! VTS can now record audio for transcription.",
-                    deniedMessage: "❌ Microphone access denied. VTS cannot function without microphone permission.",
+                    grantedMessage: "✅ Microphone access granted! Narro can now record audio for transcription.",
+                    deniedMessage: "❌ Microphone access denied. Narro cannot function without microphone permission.",
                     notDeterminedMessage: "⏳ Microphone permission not yet requested."
                 )
                 
                 if captureEngine.permissionStatus != .authorized {
                     VStack(spacing: 16) {
-                        Text("Why VTS needs microphone access:")
+                        Text("Why Narro needs microphone access:")
                             .font(.headline)
                             .frame(maxWidth: .infinity, alignment: .leading)
                         
@@ -135,7 +135,7 @@ struct OnboardingMicrophoneStep: View {
             Button("Open Settings") { openSystemPreferences() }
             Button("Cancel", role: .cancel) { }
         } message: {
-            Text("To enable microphone access, please go to System Settings > Privacy & Security > Microphone and enable VTS.")
+            Text("To enable microphone access, please go to System Settings > Privacy & Security > Microphone and enable Narro.")
         }
     }
     

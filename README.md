@@ -1,13 +1,13 @@
-# VTS - Voice Typing Studio (Modified)
+# Narro - Narrate Your Thoughts
 <p align="center">
-  <img src="public/logo.png" alt="VTS Logo" width="150">
+  <img src="public/logo.png" alt="Narro Logo" width="150">
   <br>
-  <strong>The open-source macOS dictation replacement you've been waiting for! 🚀</strong>
+  <strong>The open-source macOS dictation app that lets you narrate your thoughts into text 🎙️</strong>
 </p>
 
 > 🍴 **This is a modified fork** of the original [VTS by Josue Julcarima](https://github.com/j05u3/VTS)
 >
-> This version is streamlined for **OpenAI-only transcription** with additional features.
+> **Narro** is streamlined for **OpenAI-only transcription** with hold-to-record and other improvements.
 
 ## Modifications in This Fork
 
@@ -77,7 +77,7 @@ Transform your voice into text instantly with the power of **OpenAI** API. Say g
 
 ## 📋 Table of Contents
 
-- [Why Choose VTS?](#-why-choose-vts)
+- [Why Choose Narro?](#-why-choose-narro)
 - [API Key Setup](#api-key-setup)
 - [Usage Guide](#-usage-guide)
   - [Basic Transcription](#basic-transcription)
@@ -96,7 +96,7 @@ Transform your voice into text instantly with the power of **OpenAI** API. Say g
 - [License](#-license)
 - [Acknowledgements](#-acknowledgements)
 
-## ✨ Why Choose This Version?
+## ✨ Why Choose Narro?
 
 - 🤖 **AI-Powered Accuracy**: Leverage OpenAI's powerful transcription models
 - 🎤 **Hold-to-Record Mode**: New push-to-talk feature alongside traditional toggle mode
@@ -110,7 +110,7 @@ Transform your voice into text instantly with the power of **OpenAI** API. Say g
 
 ## API Key Setup
 
-After installing VTS, you'll need an OpenAI API key:
+After installing Narro, you'll need an OpenAI API key:
 
 - **OpenAI**: [Get your API key here](https://platform.openai.com/api-keys)
 
@@ -176,7 +176,7 @@ Getting started in 34 seconds:
 
 ## 👩‍💻 Development
 
-*This section is for developers who want to build VTS from source or contribute to the project.*
+*This section is for developers who want to build Narro from source or contribute to the project.*
 
 ### Development Requirements
 - **macOS 14.0+** (Apple Silicon & Intel supported)
@@ -187,17 +187,17 @@ Getting started in 34 seconds:
 
 1. **Clone the repository:**
 ```bash
-git clone https://github.com/j05u3/VTS.git
-cd VTS
+git clone https://github.com/YOUR_USERNAME/narro.git
+cd narro
 ```
 
 2. **Open in Xcode:**
 ```bash
-open VTSApp.xcodeproj
+open NarroApp.xcodeproj
 ```
 
 3. **Build and run:**
-   - In Xcode, select the **VTSApp** scheme
+   - In Xcode, select the **NarroApp** scheme
    - Build and run with **⌘R**
    - Grant microphone permission when prompted
 
@@ -205,12 +205,12 @@ open VTSApp.xcodeproj
 
 ```bash
 # Build via command line
-xcodebuild -project VTSApp.xcodeproj -scheme VTSApp build
+xcodebuild -project NarroApp.xcodeproj -scheme NarroApp build
 ```
 
 ### Architecture
 
-VTS follows a clean, modular architecture:
+Narro follows a clean, modular architecture:
 
 - **CaptureEngine**: Handles audio capture using AVAudioEngine with Core Audio device management
 - **DeviceManager**: Manages microphone priority lists and automatic device selection
@@ -220,7 +220,7 @@ VTS follows a clean, modular architecture:
 
 ### Testing
 
-Currently, VTS includes manual testing capabilities through the built-in Text Injection Test Suite accessible from the app's interface. This allows you to test text insertion functionality across different applications.
+Currently, Narro includes manual testing capabilities through the built-in Text Injection Test Suite accessible from the app's interface. This allows you to test text insertion functionality across different applications.
 
 Automated unit tests are planned for future releases.
 
@@ -230,7 +230,7 @@ Automated unit tests are planned for future releases.
 - **Permission Not Updating**: During development/testing, when the app changes (rebuild, code changes), macOS treats it as a "new" app
 - **Solution**: Remove the old app entry from System Settings > Privacy & Security > Accessibility, then re-grant permission
 - **Why This Happens**: Each build gets a different signature, so macOS sees it as a different application
-- **Quick Fix**: Check the app list in Accessibility settings and remove any old/duplicate VTS entries
+- **Quick Fix**: Check the app list in Accessibility settings and remove any old/duplicate Narro entries
 
 #### Testing Onboarding Flow
 - **Reset App State**: To test the complete onboarding flow, change the `PRODUCT_BUNDLE_IDENTIFIER` in Xcode project settings
@@ -239,7 +239,7 @@ Automated unit tests are planned for future releases.
 
 ### Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to contribute to VTS development.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to contribute to Narro development.
 
 ---
 
@@ -269,7 +269,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to contribute to VTS d
 
 Have feedback, suggestions, or issues? We'd love to hear from you! 
 
-**📧 [Send us your feedback](mailto:josueajc@gmail.com?subject=[VTS%20Feedback]%20Your%20thoughts%20on%20VTS)** - Quick and direct way to reach us
+**📧 [Send us your feedback](mailto:josueajc@gmail.com?subject=[Narro%20Feedback]%20Your%20thoughts%20on%20Narro)** - Quick and direct way to reach us
 
 You can also:
 - 🐛 [Report bugs or request features](https://github.com/j05u3/VTS/issues) on GitHub
@@ -282,12 +282,12 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgements
 
-VTS wouldn't be possible without the incredible work of the open-source community. Special thanks to:
+Narro wouldn't be possible without the incredible work of the open-source community. Special thanks to:
 
 ### Tools & Scripts
 - [ios-icon-generator](https://github.com/smallmuou/ios-icon-generator) by @smallmuou - for the awesome icon generation script that made creating our app icons effortless
 - [create-dmg](https://github.com/sindresorhus/create-dmg) by @sindresorhus - for the excellent DMG creation script that streamlines our distribution process
-- [Sparkle](https://github.com/sparkle-project/Sparkle) by the Sparkle Project - for providing the robust auto-update framework that keeps VTS current and secure
+- Original [VTS](https://github.com/j05u3/VTS) by Josue Julcarima - the foundation for this fork
 
 **Note**: This project builds upon the work of many developers and projects. If I've missed crediting someone or something I sincerely apologize! Please feel free to open an issue or PR to help me give proper recognition where it's due.
 

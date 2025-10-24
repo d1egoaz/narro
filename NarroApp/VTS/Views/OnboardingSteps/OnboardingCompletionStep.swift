@@ -45,7 +45,7 @@ struct OnboardingCompletionStep: View {
                         .offset(y: animateSuccess ? 0 : 20)
                         .animation(.easeOut(duration: 0.6).delay(0.6), value: animateSuccess)
                     
-                    Text("VTS is now ready to transform your voice into text!")
+                    Text("Narro is now ready to transform your voice into text!")
                         .font(.title2)
                         .foregroundColor(.secondary)
                         .multilineTextAlignment(.center)
@@ -100,7 +100,7 @@ struct OnboardingCompletionStep: View {
                     QuickStartStep(
                         step: "4",
                         title: "Access via menu bar",
-                        description: "Click the VTS icon in your menu bar for settings and controls",
+                        description: "Click the Narro icon in your menu bar for settings and controls",
                         icon: "menubar.rectangle",
                         color: .orange
                     )
@@ -153,13 +153,13 @@ struct OnboardingCompletionStep: View {
     }
     
     private func openGitHubReadme() {
-        if let url = URL(string: "https://github.com/j05u3/VTS#readme") {
+        if let url = URL(string: "https://github.com/j05u3/Narro#readme") {
             NSWorkspace.shared.open(url)
         }
     }
     
     private func openGitHubIssues() {
-        if let url = URL(string: "https://github.com/j05u3/VTS/issues") {
+        if let url = URL(string: "https://github.com/j05u3/Narro/issues") {
             NSWorkspace.shared.open(url)
         }
     }

@@ -19,7 +19,7 @@ public enum RecordingMode: String, CaseIterable, Codable {
 }
 
 @main
-struct VTSApp: App {
+struct NarroApp: App {
     
     init() {
         // App initialization
@@ -468,7 +468,7 @@ class AppState: ObservableObject {
         
         guard captureEngine.permissionGranted else {
             print("Microphone permission not granted")
-            showAlert("Microphone Access Required", "Please grant microphone permission in System Preferences > Privacy & Security > Microphone to use VTS.")
+            showAlert("Microphone Access Required", "Please grant microphone permission in System Preferences > Privacy & Security > Microphone to use Narro.")
             return
         }
         

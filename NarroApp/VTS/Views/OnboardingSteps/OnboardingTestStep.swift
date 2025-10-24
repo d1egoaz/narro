@@ -364,7 +364,7 @@ struct TestResultCard: View {
                                 )
                         )
                     
-                    Text("🎉 Your voice transcription is working perfectly! You're ready to use VTS.")
+                    Text("🎉 Your voice transcription is working perfectly! You're ready to use Narro.")
                         .font(.subheadline)
                         .foregroundColor(.green)
                         .fontWeight(.medium)

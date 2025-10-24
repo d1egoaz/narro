@@ -72,7 +72,7 @@ struct TextInjectionTestView: View {
                                 .font(.headline)
                             
                             VStack(alignment: .leading, spacing: 8) {
-                                Text("VTS uses Unicode typing simulation for reliable text insertion across all applications:")
+                                Text("Narro uses Unicode typing simulation for reliable text insertion across all applications:")
                                     .font(.body)
                                 
                                 VStack(alignment: .leading, spacing: 6) {
@@ -292,8 +292,8 @@ struct TextInjectionTestView: View {
                                 )
                                 
                                 TroubleshootingItem(
-                                    issue: "Tests work but VTS doesn't insert text",
-                                    solution: "Check Console.app for VTS logs. Try testing with different applications to identify compatibility issues."
+                                    issue: "Tests work but Narro doesn't insert text",
+                                    solution: "Check Console.app for Narro logs. Try testing with different applications to identify compatibility issues."
                                 )
                             }
                         }

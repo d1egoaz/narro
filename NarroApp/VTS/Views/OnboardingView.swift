@@ -114,7 +114,7 @@ struct OnboardingHeaderView: View {
                         .foregroundColor(.blue)
                 }
                 
-                Text("VTS")
+                Text("Narro")
                     .font(.largeTitle)
                     .fontWeight(.bold)
                     .foregroundColor(.primary)

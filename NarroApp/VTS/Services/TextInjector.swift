@@ -82,7 +82,7 @@ public class TextInjector: ObservableObject {
             log("   1. Open System Settings")
             log("   2. Go to Privacy & Security")
             log("   3. Click on Accessibility")
-            log("   4. Find 'VTS' in the list and enable it")
+            log("   4. Find 'Narro' in the list and enable it")
             log("   5. If not in the list, click the '+' button to add the app")
         } else {
             log("🎉 Text injection is ready to work! Transcribed text will be automatically inserted.")
@@ -101,7 +101,7 @@ public class TextInjector: ObservableObject {
             log("🧪 Test text will be injected automatically...")
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-                self.injectText("Hello from VTS!")
+                self.injectText("Hello from Narro!")
             }
         } else {
             log("🧪 Cannot test - accessibility permission required")
@@ -161,7 +161,7 @@ public class TextInjector: ObservableObject {
             log("🔬 TextInjector: This test helps diagnose if Accessibility API works in specific apps")
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-                let testText = "ACCESSIBILITY-ONLY: Hello from VTS!"
+                let testText = "ACCESSIBILITY-ONLY: Hello from Narro!"
                 self.log("🔬 TextInjector: Testing ONLY Accessibility API with: '\(testText)'")
                 
                 if self.tryModernAccessibilityInsertion(testText) {
@@ -186,7 +186,7 @@ public class TextInjector: ObservableObject {
             log("🔬 TextInjector: This test helps verify if typing simulation works when Accessibility API fails")
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-                let testText = "TYPING-ONLY: Hello from VTS!"
+                let testText = "TYPING-ONLY: Hello from Narro!"
                 self.log("🔬 TextInjector: Testing ONLY Unicode typing simulation with: '\(testText)'")
                 
                 if self.simulateModernUnicodeTyping(testText) {
@@ -265,7 +265,7 @@ public class TextInjector: ObservableObject {
     public func injectText(_ text: String, replaceLastText: String? = nil) {
         guard hasAccessibilityPermission else {
             print("❌ TextInjector: No accessibility permission - cannot inject text")
-            print("📋 TextInjector: VTS requires accessibility permission for text injection functionality")
+            print("📋 TextInjector: Narro requires accessibility permission for text injection functionality")
             print("📋 TextInjector: Please grant accessibility permission in System Settings > Privacy & Security > Accessibility")
             return
         }

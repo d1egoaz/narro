@@ -134,7 +134,7 @@ public class StatusBarController: ObservableObject {
 
         // About
         let aboutItem = NSMenuItem(
-            title: "ℹ️ About VTS",
+            title: "ℹ️ About Narro",
             action: #selector(showAbout),
             keyEquivalent: ""
         )
@@ -143,7 +143,7 @@ public class StatusBarController: ObservableObject {
 
         // Quit
         let quitItem = NSMenuItem(
-            title: "🚪 Quit VTS",
+            title: "🚪 Quit Narro",
             action: #selector(quit),
             keyEquivalent: "q"
         )
@@ -183,7 +183,7 @@ public class StatusBarController: ObservableObject {
 
     @objc private func showAbout() {
         let alert = NSAlert()
-        alert.messageText = "VTS"
+        alert.messageText = "Narro"
 
         // Get version from Bundle
         let version =
@@ -223,13 +223,13 @@ public class StatusBarController: ObservableObject {
         // Priority: Recording > Processing > Idle
         if isRecording {
             button.image = NSImage(named: StatusIconName.recording)
-            button.toolTip = "VTS is recording audio - Press \(hotkey) to stop"
+            button.toolTip = "Narro is recording audio - Press \(hotkey) to stop"
         } else if isProcessing {
             button.image = NSImage(named: StatusIconName.processing)
-            button.toolTip = "VTS is processing audio"
+            button.toolTip = "Narro is processing audio"
         } else {
             button.image = NSImage(named: StatusIconName.idle)
-            button.toolTip = "VTS is ready - Press \(hotkey) to start recording"
+            button.toolTip = "Narro is ready - Press \(hotkey) to start recording"
         }
         
         // Ensure the image is properly sized for the status bar

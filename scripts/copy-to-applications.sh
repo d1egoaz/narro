@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Copy VTS.app to ~/Applications after successful build
+# Copy Narro.app to ~/Applications after successful build
 # This script runs automatically as part of the Xcode build process
 
-APP_NAME="VTS.app"
+APP_NAME="Narro.app"
 BUILD_APP="${BUILT_PRODUCTS_DIR}/${APP_NAME}"
 DEST_DIR="${HOME}/Applications"
 
@@ -15,7 +15,7 @@ echo "========================================"
 mkdir -p "${DEST_DIR}"
 
 # Kill any running instances
-killall VTS 2>/dev/null || true
+killall Narro 2>/dev/null || true
 
 # Copy the built app
 if [ -d "${BUILD_APP}" ]; then
@@ -30,7 +30,7 @@ if [ -d "${BUILD_APP}" ]; then
 
     if [ $? -eq 0 ]; then
         echo "✓ Successfully copied ${APP_NAME} to ${DEST_DIR}"
-        echo "✓ You can now launch VTS from Applications"
+        echo "✓ You can now launch Narro from Applications"
     else
         echo "✗ Failed to copy ${APP_NAME}"
         exit 1

@@ -71,7 +71,7 @@ public enum OnboardingStep: Int, CaseIterable {
     public var title: String {
         switch self {
         case .welcome:
-            return "Welcome to VTS"
+            return "Welcome to Narro"
         case .microphone:
             return "Microphone Access"
         case .apiKey:
@@ -102,7 +102,7 @@ public enum OnboardingStep: Int, CaseIterable {
         case .test:
             return "Let's test your voice transcription"
         case .completion:
-            return "You're ready to start using VTS!"
+            return "You're ready to start using Narro!"
         }
     }
     

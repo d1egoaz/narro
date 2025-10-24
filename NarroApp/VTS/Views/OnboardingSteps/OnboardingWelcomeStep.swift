@@ -13,7 +13,7 @@ struct OnboardingWelcomeStep: View {
                     .scaleEffect(animateFeatures ? 1.0 : 0.8)
                     .animation(.easeOut(duration: 0.8).delay(0.2), value: animateFeatures)
                 
-                Text("Welcome to VTS")
+                Text("Welcome to Narro")
                     .font(.system(size: 36, weight: .bold, design: .default))
                     .multilineTextAlignment(.center)
                 
