@@ -5,7 +5,7 @@ public class OpenAIStreamingProvider: BaseStreamingSTTProvider {
     
     // MARK: - Constants
     private enum Constants {
-        static let realtimeURL = "wss://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview"
+        static let realtimeURL = "wss://api.openai.com/v1/realtime?intent=transcription"
         static let inputAudioFormat = "pcm16"
         static let noiseReductionType = "near_field"
         static let finalTranscriptTimeout: TimeInterval = 30.0

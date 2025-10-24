@@ -87,8 +87,6 @@ struct OnboardingView: View {
             OnboardingAccessibilityStep(appState: appState)
         case .notifications:
             OnboardingNotificationsStep(appState: appState)
-        case .analytics:
-            OnboardingAnalyticsStep(appState: appState)
         case .test:
             OnboardingTestStep(appState: appState)
         case .completion:

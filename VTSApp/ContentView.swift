@@ -23,21 +23,15 @@ struct ContentView: View {
             // Quick Settings
             VStack(spacing: 12) {
                 HStack {
-                    Text("AI Provider:")
-                        .frame(width: 70, alignment: .leading)
-                    Picker("", selection: $appState.selectedProvider) {
-                        ForEach(STTProviderType.allCases, id: \.self) { provider in
-                            Text(provider.rawValue).tag(provider)
-                        }
-                    }
-                    .pickerStyle(.segmented)
-                    .onChange(of: appState.selectedProvider) { _, newProvider in
-                        appState.selectedModel = newProvider.restModels.first ?? ""
-                    }
+                    Image(systemName: "brain.head.profile")
+                        .foregroundColor(.blue)
+                    Text("OpenAI")
+                        .fontWeight(.medium)
+                    Spacer()
                 }
-                
+
                 HStack {
-                    Text("AI Model:")
+                    Text("Model:")
                         .frame(width: 70, alignment: .leading)
                     Picker("", selection: $appState.selectedModel) {
                         ForEach(appState.selectedProvider.restModels, id: \.self) { model in
@@ -46,18 +40,12 @@ struct ContentView: View {
                     }
                     .pickerStyle(.menu)
                 }
-                
-                // Real-time toggle (only show for providers that support it)
-                if appState.selectedProvider.supportsRealtimeStreaming {
-                    HStack {
-                        Text("Mode:")
-                            .frame(width: 70, alignment: .leading)
-                        
-                        Toggle("Faster ⚡️ (Beta, uses Realtime APIs)", isOn: $appState.useRealtime)
-                            .toggleStyle(.switch)
-                        
-                        Spacer()
-                    }
+
+                HStack {
+                    Text("Mode:")
+                        .frame(width: 70, alignment: .leading)
+                    Toggle("Real-time ⚡️", isOn: $appState.useRealtime)
+                        .help("Enable real-time streaming for instant results")
                 }
                 
                 HStack {

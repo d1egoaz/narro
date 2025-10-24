@@ -174,7 +174,6 @@ struct OnboardingAPIKeyStep: View {
         
         do {
             try apiKeyManager.storeAPIKey(apiKey.trimmingCharacters(in: .whitespacesAndNewlines), for: selectedProvider)
-            appState.selectedProvider = selectedProvider
             showingSuccess = true
             isSaving = false
         } catch {
@@ -198,12 +197,8 @@ struct OnboardingAPIKeyStep: View {
         switch selectedProvider {
         case .openai:
             url = URL(string: "https://platform.openai.com/api-keys")
-        case .groq:
-            url = URL(string: "https://console.groq.com/keys")
-        case .deepgram:
-            url = URL(string: "https://console.deepgram.com/project/keys")
         }
-        
+
         if let url = url {
             NSWorkspace.shared.open(url)
         }
@@ -298,10 +293,6 @@ extension STTProviderType {
         switch self {
         case .openai:
             return .green
-        case .groq:
-            return .orange
-        case .deepgram:
-            return .blue
         }
     }
     
@@ -309,10 +300,6 @@ extension STTProviderType {
         switch self {
         case .openai:
             return "Industry-leading AI models with high accuracy"
-        case .groq:
-            return "Ultra-fast inference with competitive accuracy"
-        case .deepgram:
-            return "Advanced speech recognition with real-time processing"
         }
     }
     
@@ -320,10 +307,6 @@ extension STTProviderType {
         switch self {
         case .openai:
             return "Pay-per-use pricing, typically $0.006/minute"
-        case .groq:
-            return "Free tier available, very cost-effective"
-        case .deepgram:
-            return "Pay-as-you-go, may start at $0.0059/minute"
         }
     }
     
@@ -331,10 +314,6 @@ extension STTProviderType {
         switch self {
         case .openai:
             return "Standard processing speed, reliable quality"
-        case .groq:
-            return "Lightning-fast processing, near real-time"
-        case .deepgram:
-            return "Real-time and batch processing capabilities"
         }
     }
     
@@ -342,10 +321,6 @@ extension STTProviderType {
         switch self {
         case .openai:
             return "Excellent accuracy across all languages"
-        case .groq:
-            return "High accuracy with superior speed"
-        case .deepgram:
-            return "Enterprise-grade accuracy with multiple models"
         }
     }
 }

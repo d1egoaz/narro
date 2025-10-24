@@ -22,7 +22,6 @@ public class RestTranscriptionService: ObservableObject {
         static let retryEmpty = "⚠️ Retry transcription returned empty result"
         static let retryFailed = "🔔 Retry transcription failed:"
         static let retryStarting = "🔔 Starting retry transcription with"
-        static let cannotTrackAnalytics = "⚠️ Cannot track analytics: missing provider or config data"
     }
     
     // MARK: - Published Properties
@@ -45,17 +44,7 @@ public class RestTranscriptionService: ObservableObject {
     
     // Reference to notification manager
     private let notificationManager = NotificationManager.shared
-    
-    // Analytics completion callback
-    public var onTranscriptionCompleted: ((String, String, Bool, Int, Int, Bool) -> Void)?
-    
-    // Timing properties for analytics
-    private var processStartTime: Date?           // When user first presses record button
-    private var audioRecordingStartTime: Date?    // When audio recording actually starts
-    private var audioRecordingEndTime: Date?      // When audio recording stops
-    private var processingStartTime: Date?        // When processing starts (after audio recording ends)
-    private var processingEndTime: Date?          // When we receive final result
-    
+
     public init() {
         setupTextInjectorObservation()
         setupNotificationHandlers()
@@ -86,18 +75,7 @@ public class RestTranscriptionService: ObservableObject {
     public func setProvider(_ provider: RestSTTProvider) {
         self.provider = provider
     }
-    
-    public func setTimingData(processStart: Date?, audioStart: Date?, audioEnd: Date?) {
-        processStartTime = processStart
-        audioRecordingStartTime = audioStart
-        audioRecordingEndTime = audioEnd
-        
-        // Start processing timing when audio recording ends
-        if let audioEnd = audioEnd {
-            processingStartTime = audioEnd
-        }
-    }
-    
+
     public func startTranscription(
         audioStream: AsyncThrowingStream<Data, Error>,
         config: ProviderConfig,
@@ -124,20 +102,14 @@ public class RestTranscriptionService: ObservableObject {
             do {
                 try provider.validateConfig(config)
                 print(LogMessages.configValidated)
-                
-                // Mark when we start the actual transcription process
-                startTranscriptionTiming()
-                
+
                 // Collect audio data while transcribing for potential retry
                 let (collectedData, transcriptionResult) = try await collectAudioAndTranscribe(
                     stream: audioStream,
                     provider: provider,
                     config: config
                 )
-                
-                // Mark when transcription is complete
-                endTranscriptionTiming()
-                
+
                 // Store audio data for potential retry
                 self.currentAudioData = collectedData
                 
@@ -149,26 +121,17 @@ public class RestTranscriptionService: ObservableObject {
                 
                 // Update UI and inject text
                 handleSuccessfulTranscription(finalText)
-                
+
                 print(LogMessages.transcriptionCompleted)
-                
-                // Track analytics
-                trackAnalytics(provider: provider, config: config, success: true)
-                
+
                 // Clear retry context on success
                 clearRetryContext()
                 
             } catch {
                 print("\(LogMessages.transcriptionError) \(error)")
-                
-                // Mark when transcription failed (for timing)
-                endTranscriptionTiming()
-                
+
                 let sttError = error as? STTError ?? STTError.transcriptionError(error.localizedDescription)
-                
-                // Track analytics
-                trackAnalytics(provider: provider, config: config, success: false)
-                
+
                 handleErrorWithNotification(sttError)
             }
             
@@ -320,15 +283,9 @@ public class RestTranscriptionService: ObservableObject {
         transcriptionTask = Task { @MainActor in
             do {
                 try provider.validateConfig(config)
-                
-                // Mark when we start the retry transcription process
-                startTranscriptionTiming()
-                
+
                 let transcriptionResult = try await provider.transcribe(stream: audioStream, config: config)
-                
-                // Mark when retry transcription is complete
-                endTranscriptionTiming()
-                
+
                 let finalText = transcriptionResult.trimmingCharacters(in: .whitespaces)
                 
                 // Handle the successful transcription
@@ -340,21 +297,12 @@ public class RestTranscriptionService: ObservableObject {
                 } else {
                     print(LogMessages.retryEmpty)
                 }
-                
-                // Track analytics
-                trackAnalytics(provider: nil, config: config, success: success, providerType: providerType)
-                
+
                 clearRetryContext()
                 
             } catch {
                 print("\(LogMessages.retryFailed) \(error)")
-                
-                // Mark when retry transcription failed (for timing)
-                endTranscriptionTiming()
-                
-                // Track analytics
-                trackAnalytics(provider: nil, config: config, success: false, providerType: providerType)
-                
+
                 let sttError = error as? STTError ?? STTError.transcriptionError(error.localizedDescription)
                 handleErrorWithNotification(sttError)
             }
@@ -374,55 +322,6 @@ public class RestTranscriptionService: ObservableObject {
         currentAudioData = nil
         currentConfig = nil
         currentProviderType = nil
-    }
-    
-    // MARK: - Analytics Helper Methods
-    
-    private func startTranscriptionTiming() {
-        // Processing timing is set when audio recording ends in setTimingData
-        // This method is kept for compatibility but doesn't override processingStartTime
-        if processingStartTime == nil {
-            processingStartTime = Date()
-        }
-    }
-    
-    private func endTranscriptionTiming() {
-        processingEndTime = Date()
-    }
-    
-    private func trackAnalytics(provider: RestSTTProvider?, config: ProviderConfig?, success: Bool, providerType: STTProviderType? = nil) {
-        guard let onCompletion = onTranscriptionCompleted, let config = config else { return }
-
-        guard let providerName = provider?.providerType.rawValue ?? providerType?.rawValue else {
-            print(LogMessages.cannotTrackAnalytics)
-            return
-        }
-
-        let processingTimeMs = calculateProcessingTime()
-        let audioDurationMs = calculateAudioDuration()
-
-        onCompletion(
-            providerName,
-            config.model,
-            success,
-            audioDurationMs,
-            processingTimeMs,
-            false  // isRealtime = false for REST service
-        )
-    }
-    
-    private func calculateProcessingTime() -> Int {
-        guard let startTime = processingStartTime else { return 0 }
-        let endTime = processingEndTime ?? Date()
-        let timeInterval = endTime.timeIntervalSince(startTime)
-        return Int(timeInterval * 1000) // Convert to milliseconds
-    }
-    
-    private func calculateAudioDuration() -> Int {
-        guard let startTime = audioRecordingStartTime,
-              let endTime = audioRecordingEndTime else { return 0 }
-        let timeInterval = endTime.timeIntervalSince(startTime)
-        return Int(timeInterval * 1000) // Convert to milliseconds
     }
 
     public func copyLastTranscriptionToClipboard() -> Bool {

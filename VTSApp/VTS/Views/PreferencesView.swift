@@ -39,23 +39,8 @@ struct PreferencesView: View {
                         .font(.largeTitle)
                         .fontWeight(.bold)
                 
-                GroupBox("AI Provider Configuration") {
+                GroupBox("OpenAI Transcription") {
                     VStack(alignment: .leading, spacing: 15) {
-                        // Provider Selection
-                        HStack {
-                            Text("AI Provider:")
-                                .frame(width: 120, alignment: .leading)
-                            Picker("", selection: Binding(
-                                get: { appState.selectedProvider },
-                                set: { appState.selectedProvider = $0 }
-                            )) {
-                                ForEach(STTProviderType.allCases, id: \.self) { provider in
-                                    Text(provider.rawValue).tag(provider)
-                                }
-                            }
-                            .pickerStyle(.segmented)
-                        }
-                        
                         // Model Selection
                         HStack {
                             Text("AI Model:")
@@ -70,174 +55,142 @@ struct PreferencesView: View {
                             }
                             .pickerStyle(.menu)
                         }
-                        
-                        // Custom Instructions / Keywords based on provider
-                        if appState.selectedProvider == .deepgram {
-                            // Check if Nova3 is selected
-                            let isNova3Selected = appState.selectedModel == "nova-3"
-                            
-                            // Deepgram Keywords Management
-                            VStack(alignment: .leading, spacing: 8) {
-                                HStack {
-                                    Text("Keywords:")
-                                        .frame(width: 240, alignment: .leading)
-                                    Spacer()
-                                    Text("\(appState.deepgramKeywords.count) keywords")
-                                        .font(.caption)
-                                        .foregroundColor(.secondary)
-                                }
-                                
-                                KeywordManagementView(keywords: $appState.deepgramKeywords)
-                                    .disabled(isNova3Selected)
-                                    .opacity(isNova3Selected ? 0.5 : 1.0)
-                            }
-                            
-                            // Help text for keywords
-                            if isNova3Selected {
-                                Text("Keywords are not supported by Nova-3. Nova-3 uses keyterm prompting which is only available for English, but VTS aims for multi-language support.")
-                                    .font(.caption)
-                                    .foregroundColor(.orange)
-                            } else {
-                                Text("Add keywords to boost recognition accuracy for specific terms, names, or domain-specific vocabulary.")
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                            }
-                        } else {
-                            // System Prompt for OpenAI/Groq (Deepgram uses keywords)
-                            VStack(alignment: .leading, spacing: 8) {
-                                HStack {
-                                    Text("Custom Instructions:")
-                                        .frame(width: 240, alignment: .leading)
-                                    Spacer()
-                                    Text("\(appState.systemPrompt.count)/\(AppState.maxSystemPromptLength) characters")
-                                        .font(.caption)
-                                        .foregroundColor(characterCountColor(for: appState.systemPrompt.count))
-                                }
-                                
-                                ZStack(alignment: .topLeading) {
-                                    // Background with border similar to TextField
-                                    RoundedRectangle(cornerRadius: 6)
-                                        .stroke(Color.primary.opacity(0.2), lineWidth: 1)
-                                        .background(
-                                            RoundedRectangle(cornerRadius: 6)
-                                                .fill(Color(NSColor.textBackgroundColor))
-                                        )
-                                    
-                                    // Auto-scrolling TextEditor that keeps cursor visible
-                                    AutoScrollingTextEditor(text: $appState.systemPrompt)
-                                        .padding(.horizontal, 8)
-                                        .padding(.vertical, 6)
-                                    
-                                    // Placeholder text when empty
-                                    if appState.systemPrompt.isEmpty {
-                                        Text("Add custom instructions to improve transcription accuracy for specific domains, names, or technical terms")
-                                            .font(.system(size: 13))
-                                            .foregroundColor(.secondary)
-                                            .padding(.horizontal, 12)
-                                            .padding(.vertical, 10)
-                                            .allowsHitTesting(false)
-                                    }
-                                }
-                            }
-                            
-                            // Help text for custom instructions
-                            Text("Custom instructions help the AI understand your specific context, vocabulary, or domain expertise for better transcription accuracy.")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
+
+                        // Real-time Mode Toggle
+                        HStack {
+                            Toggle("Enable Real-time Streaming", isOn: $appState.useRealtime)
+                                .help("Use WebSocket streaming for instant transcription as you speak")
                         }
+
+                        Divider()
+
+                        // Custom Instructions
+                        VStack(alignment: .leading, spacing: 8) {
+                            HStack {
+                                Text("Custom Instructions:")
+                                    .frame(width: 240, alignment: .leading)
+                                Spacer()
+                                Text("\(appState.systemPrompt.count)/\(AppState.maxSystemPromptLength) characters")
+                                    .font(.caption)
+                                    .foregroundColor(characterCountColor(for: appState.systemPrompt.count))
+                            }
+
+                            ZStack(alignment: .topLeading) {
+                                // Background with border similar to TextField
+                                RoundedRectangle(cornerRadius: 6)
+                                    .stroke(Color.primary.opacity(0.2), lineWidth: 1)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 6)
+                                            .fill(Color(NSColor.textBackgroundColor))
+                                    )
+
+                                // Auto-scrolling TextEditor that keeps cursor visible
+                                AutoScrollingTextEditor(text: $appState.systemPrompt)
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 6)
+
+                                // Placeholder text when empty
+                                if appState.systemPrompt.isEmpty {
+                                    Text("Add custom instructions to improve transcription accuracy for specific domains, names, or technical terms")
+                                        .font(.system(size: 13))
+                                        .foregroundColor(.secondary)
+                                        .padding(.horizontal, 12)
+                                        .padding(.vertical, 10)
+                                        .allowsHitTesting(false)
+                                }
+                            }
+                        }
+
+                        // Help text for custom instructions
+                        Text("Custom instructions help the AI understand your specific context, vocabulary, or domain expertise for better transcription accuracy.")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
                     }
                     .padding()
                 }
                 
                 GroupBox("API Authentication") {
                     VStack(alignment: .leading, spacing: 15) {
-                        Text("API Key Management")
+                        Text("OpenAI API Key")
                             .font(.headline)
-                        
-                        Text("Enter your API keys for speech recognition services. Keys are stored securely in your macOS keychain and never shared.")
+
+                        Text("Your API key is stored securely in your macOS keychain and never shared.")
                             .font(.caption)
                             .foregroundColor(.secondary)
-                        
-                        ForEach(STTProviderType.allCases, id: \.self) { provider in
-                            VStack(alignment: .leading, spacing: 8) {
-                                HStack {
-                                    Image(systemName: provider.iconName)
-                                        .foregroundColor(provider.color)
-                                        .frame(width: 20)
-                                    
-                                    Text(provider.displayName)
-                                        .font(.headline)
-                                    
-                                    Spacer()
-                                    
-                                    // Status indicator
-                                    if apiKeyManager.hasAPIKey(for: provider) {
-                                        Image(systemName: "checkmark.circle.fill")
-                                            .foregroundColor(.green)
-                                            .help("API key configured")
-                                    } else {
-                                        Image(systemName: "exclamationmark.circle.fill")
-                                            .foregroundColor(.orange)
-                                            .help("API key required")
-                                    }
+
+                        let provider: STTProviderType = .openai
+
+                        HStack {
+                            Image(systemName: provider.iconName)
+                                .foregroundColor(provider.color)
+                                .frame(width: 20)
+
+                            if apiKeyManager.hasAPIKey(for: provider) {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .foregroundColor(.green)
+                                    .help("API key configured")
+                            } else {
+                                Image(systemName: "exclamationmark.circle.fill")
+                                    .foregroundColor(.orange)
+                                    .help("API key required")
+                            }
+
+                            Spacer()
+                        }
+
+                        HStack {
+                            if editingAPIKeys[provider] != nil {
+                                // Editing mode
+                                SecureField("Paste your OpenAI API key here", text: Binding(
+                                    get: { editingAPIKeys[provider] ?? "" },
+                                    set: { editingAPIKeys[provider] = $0 }
+                                ))
+                                .textFieldStyle(.roundedBorder)
+
+                                Button("Save") {
+                                    saveAPIKey(for: provider)
                                 }
-                                
+                                .buttonStyle(.borderedProminent)
+                                .disabled(editingAPIKeys[provider]?.isEmpty != false)
+
+                                Button("Cancel") {
+                                    editingAPIKeys[provider] = nil
+                                }
+                                .buttonStyle(.bordered)
+                            } else {
+                                // Display mode
                                 HStack {
-                                    if editingAPIKeys[provider] != nil {
-                                        // Editing mode
-                                        SecureField("Paste your \(provider.displayName) API key here", text: Binding(
-                                            get: { editingAPIKeys[provider] ?? "" },
-                                            set: { editingAPIKeys[provider] = $0 }
-                                        ))
-                                        .textFieldStyle(.roundedBorder)
-                                        
-                                        Button("Save") {
-                                            saveAPIKey(for: provider)
-                                        }
-                                        .buttonStyle(.borderedProminent)
-                                        .disabled(editingAPIKeys[provider]?.isEmpty != false)
-                                        
-                                        Button("Cancel") {
-                                            editingAPIKeys[provider] = nil
+                                    if apiKeyManager.hasAPIKey(for: provider) {
+                                        Text("API key configured ••••••••••••••••")
+                                            .font(.system(.body, design: .monospaced))
+                                            .foregroundColor(.secondary)
+                                    } else {
+                                        Text("No API key configured")
+                                            .foregroundColor(.secondary)
+                                            .italic()
+                                    }
+
+                                    Spacer()
+
+                                    if apiKeyManager.hasAPIKey(for: provider) {
+                                        Button("Edit") {
+                                            editingAPIKeys[provider] = ""
                                         }
                                         .buttonStyle(.bordered)
-                                    } else {
-                                        // Display mode
-                                        HStack {
-                                            if apiKeyManager.hasAPIKey(for: provider) {
-                                                Text("API key configured ••••••••••••••••")
-                                                    .font(.system(.body, design: .monospaced))
-                                                    .foregroundColor(.secondary)
-                                            } else {
-                                                Text("No API key configured")
-                                                    .foregroundColor(.secondary)
-                                                    .italic()
-                                            }
-                                            
-                                            Spacer()
-                                            
-                                            if apiKeyManager.hasAPIKey(for: provider) {
-                                                Button("Edit") {
-                                                    editingAPIKeys[provider] = ""
-                                                }
-                                                .buttonStyle(.bordered)
-                                                
-                                                Button("Remove") {
-                                                    removeAPIKey(for: provider)
-                                                }
-                                                .buttonStyle(.bordered)
-                                                .foregroundColor(.red)
-                                            } else {
-                                                Button("Add Key") {
-                                                    editingAPIKeys[provider] = ""
-                                                }
-                                                .buttonStyle(.borderedProminent)
-                                            }
+
+                                        Button("Remove") {
+                                            removeAPIKey(for: provider)
                                         }
+                                        .buttonStyle(.bordered)
+                                        .foregroundColor(.red)
+                                    } else {
+                                        Button("Add Key") {
+                                            editingAPIKeys[provider] = ""
+                                        }
+                                        .buttonStyle(.borderedProminent)
                                     }
                                 }
                             }
-                            .padding(.bottom, 8)
                         }
                     }
                     .padding()
@@ -550,99 +503,7 @@ struct PreferencesView: View {
                     }
                     .padding()
                 }
-                
-                GroupBox("Auto-Update Settings") {
-                    VStack(alignment: .leading, spacing: 15) {
-                        HStack {
-                            Image(systemName: "arrow.clockwise.circle.fill")
-                                .foregroundColor(.blue)
-                                .font(.title2)
-                            
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text("Automatic Updates")
-                                    .font(.headline)
-                                Text("Keep VTS up to date with the latest features and security improvements")
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                            }
-                            
-                            Spacer()
-                            
-                            VStack(spacing: 8) {
-                                Button(appState.sparkleUpdaterManagerService.isCheckingForUpdates ? "Checking..." : "Check Now") {
-                                    appState.sparkleUpdaterManagerService.checkForUpdates()
-                                }
-                                .buttonStyle(.bordered)
-                                .disabled(appState.sparkleUpdaterManagerService.isCheckingForUpdates)
-                                
-                                if appState.sparkleUpdaterManagerService.isCheckingForUpdates {
-                                    ProgressView()
-                                        .controlSize(.small)
-                                }
-                            }
-                        }
-                        
-                        Divider()
-                        
-                        VStack(alignment: .leading, spacing: 12) {
-                            Text("Update Behavior:")
-                                .font(.subheadline)
-                                .fontWeight(.semibold)
-                            
-                            VStack(alignment: .leading, spacing: 8) {
-                                ForEach(UpdatePreference.allCases, id: \.self) { preference in
-                                    HStack {
-                                        Button(action: {
-                                            appState.sparkleUpdaterManagerService.updatePreference = preference
-                                        }) {
-                                            HStack {
-                                                Image(systemName: appState.sparkleUpdaterManagerService.updatePreference == preference ? "largecircle.fill.circle" : "circle")
-                                                    .foregroundColor(appState.sparkleUpdaterManagerService.updatePreference == preference ? .accentColor : .secondary)
-                                                
-                                                VStack(alignment: .leading, spacing: 2) {
-                                                    Text(preference.title)
-                                                        .font(.body)
-                                                        .foregroundColor(.primary)
-                                                    Text(preference.description)
-                                                        .font(.caption)
-                                                        .foregroundColor(.secondary)
-                                                }
-                                                
-                                                Spacer()
-                                            }
-                                        }
-                                        .buttonStyle(.plain)
-                                    }
-                                }
-                            }
-                        }
-                        
-                        if !appState.sparkleUpdaterManagerService.canAutoUpdate {
-                            HStack {
-                                Image(systemName: "exclamationmark.triangle.fill")
-                                    .foregroundColor(.orange)
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text("Auto-updates unavailable")
-                                        .font(.caption)
-                                        .fontWeight(.semibold)
-                                    Text("This app was installed from the Mac App Store or in a sandboxed environment")
-                                        .font(.caption)
-                                        .foregroundColor(.secondary)
-                                }
-                                Spacer()
-                            }
-                        }
-                        
-                        HStack {
-                            Text("Current version: \(appState.sparkleUpdaterManagerService.currentVersion)")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                            Spacer()
-                        }
-                    }
-                    .padding()
-                }
-                
+
                 Spacer(minLength: 20)
             }
             .padding()
@@ -661,11 +522,34 @@ struct PreferencesView: View {
                 
                 GroupBox("Recording Hotkey") {
                     VStack(alignment: .leading, spacing: 15) {
-                        Text("Configure the global keyboard shortcut to toggle recording on/off.")
+                        Text("Configure the global keyboard shortcut and recording behavior.")
                             .foregroundColor(.secondary)
-                        
+
+                        // Recording Mode Selection
                         HStack {
-                            Text("Toggle Recording:")
+                            Text("Recording Mode:")
+                                .frame(width: 140, alignment: .leading)
+
+                            Picker("", selection: $appState.recordingMode) {
+                                ForEach(RecordingMode.allCases, id: \.self) { mode in
+                                    Text(mode.rawValue).tag(mode)
+                                }
+                            }
+                            .pickerStyle(.segmented)
+                            .frame(width: 200)
+
+                            Spacer()
+                        }
+
+                        Text(appState.recordingMode.description)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .padding(.leading, 140)
+
+                        Divider()
+
+                        HStack {
+                            Text("Hotkey:")
                                 .frame(width: 140, alignment: .leading)
                             
                             KeyboardShortcuts.Recorder(for: .toggleRecording)
@@ -755,63 +639,7 @@ struct PreferencesView: View {
                     }
                     .padding()
                 }
-                
-                GroupBox("Privacy & Analytics") {
-                    VStack(alignment: .leading, spacing: 16) {
-                        Text("Help improve VTS with anonymous usage data")
-                            .font(.headline)
-                        
-                        HStack {
-                            Image(systemName: "chart.bar.fill")
-                                .foregroundColor(.blue)
-                                .font(.title2)
-                            
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text("Share Anonymous Usage Data")
-                                    .font(.headline)
-                                Text("Help us improve VTS by sharing anonymous usage patterns. No voice recordings or personal data is ever collected.")
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                            }
-                            
-                            Spacer()
-                            
-                            Toggle("", isOn: Binding(
-                                get: { appState.analyticsConsentManagerService.hasConsent },
-                                set: { newValue in
-                                    if newValue {
-                                        appState.analyticsConsentManagerService.grantConsent()
-                                    } else {
-                                        appState.analyticsConsentManagerService.revokeConsent()
-                                    }
-                                }
-                            ))
-                            .toggleStyle(.switch)
-                        }
-                        
-                        if appState.analyticsConsentManagerService.hasConsent {
-                            HStack {
-                                Image(systemName: "checkmark.circle.fill")
-                                    .foregroundColor(.green)
-                                    .font(.caption)
-                                Text("Analytics enabled - Thank you for helping improve VTS!")
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                            }
-                        } else {
-                            HStack {
-                                Image(systemName: "xmark.circle.fill")
-                                    .foregroundColor(.secondary)
-                                    .font(.caption)
-                                Text("Analytics disabled - VTS works exactly the same")
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                            }
-                        }
-                    }
-                    .padding()
-                }
-                
+
                 Spacer(minLength: 20)
             }
             .padding()

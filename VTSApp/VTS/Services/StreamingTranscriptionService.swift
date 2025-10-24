@@ -49,17 +49,7 @@ public class StreamingTranscriptionService: ObservableObject {
     
     // Reference to notification manager
     private let notificationManager = NotificationManager.shared
-    
-    // Analytics completion callback
-    public var onTranscriptionCompleted: ((String, String, Bool, Int, Int, Bool) -> Void)?
-    
-    // Timing properties for analytics
-    private var processStartTime: Date?
-    private var audioRecordingStartTime: Date?
-    private var audioRecordingEndTime: Date?
-    private var processingStartTime: Date?
-    private var processingEndTime: Date?
-    
+
     public init() {
         partialResults = PartialResultsManager()
         setupTextInjectorObservation()
@@ -81,18 +71,7 @@ public class StreamingTranscriptionService: ObservableObject {
     public func setProvider(_ provider: StreamingSTTProvider) {
         self.provider = provider
     }
-    
-    public func setTimingData(processStart: Date?, audioStart: Date?, audioEnd: Date?) {
-        processStartTime = processStart
-        audioRecordingStartTime = audioStart
-        audioRecordingEndTime = audioEnd
-        
-        // Start processing timing when audio recording ends
-        if let audioEnd = audioEnd {
-            processingStartTime = audioEnd
-        }
-    }
-    
+
     public func startTranscription(
         audioStream: AsyncThrowingStream<Data, Error>,
         config: ProviderConfig
@@ -122,10 +101,7 @@ public class StreamingTranscriptionService: ObservableObject {
                 
                 try provider.validateConfig(config)
                 print(LogMessages.configValidated)
-                
-                // Mark when we start the actual transcription process
-                startTranscriptionTiming()
-                
+
                 // Start the streaming transcription process
                 try await processStreamingTranscription(
                     audioStream: audioStream,
@@ -137,15 +113,9 @@ public class StreamingTranscriptionService: ObservableObject {
                 
             } catch {
                 print("\(LogMessages.transcriptionError) \(error)")
-                
-                // Mark when transcription failed
-                endTranscriptionTiming()
-                
+
                 let sttError = convertToSTTError(error)
-                
-                // Track analytics
-                trackAnalytics(provider: provider, config: config, success: false)
-                
+
                 handleError(sttError)
             }
             
@@ -225,12 +195,7 @@ public class StreamingTranscriptionService: ObservableObject {
     
     private func performBackgroundCleanup(provider: StreamingSTTProvider?, config: ProviderConfig?) async {
         print("🧹 StreamingTranscriptionService: Starting background cleanup...")
-        
-        // Track analytics (using the partial results final transcript)
-        await MainActor.run {
-            trackAnalytics(provider: provider, config: config, success: true)
-        }
-        
+
         // Cleanup session
         await MainActor.run {
             currentSession = nil
@@ -272,15 +237,12 @@ public class StreamingTranscriptionService: ObservableObject {
                         let finalTranscript = partialResults.getFinalTranscription()
                         if !finalTranscript.isEmpty {
                             handleSuccessfulTranscription(finalTranscript)
-                            
-                            // Mark timing completion immediately 
-                            endTranscriptionTiming()
-                            
+
                             // 🎯 IMMEDIATE UI UPDATE: Update transcription state immediately after text injection
                             isTranscribing = false
                             isStreamingActive = false
-                            
-                            // 🔄 BACKGROUND CLEANUP: Start final cleanup and analytics in background
+
+                            // 🔄 BACKGROUND CLEANUP: Start final cleanup in background
                             Task.detached { [weak self] in
                                 await self?.performBackgroundCleanup(provider: self?.provider, config: self?.currentConfig)
                             }
@@ -328,58 +290,8 @@ public class StreamingTranscriptionService: ObservableObject {
         // Show notification for the error
         notificationManager.showTranscriptionError(error)
     }
-    
-    // MARK: - Analytics Helper Methods
-    
-    private func startTranscriptionTiming() {
-        // Processing timing is set when audio recording ends in setTimingData
-        // This method is kept for compatibility but doesn't override processingStartTime
-        if processingStartTime == nil {
-            processingStartTime = Date()
-        }
-    }
-    
-    private func endTranscriptionTiming() {
-        processingEndTime = Date()
-    }
-    
-    private func trackAnalytics(provider: StreamingSTTProvider?, config: ProviderConfig?, success: Bool, providerType: STTProviderType? = nil) {
-        guard let onCompletion = onTranscriptionCompleted, let config = config else { return }
 
-        guard let providerName = provider?.providerType.rawValue ?? providerType?.rawValue else {
-            print(LogMessages.cannotTrackAnalytics)
-            return
-        }
-
-        let processingTimeMs = calculateProcessingTime()
-        let audioDurationMs = calculateAudioDuration()
-
-        // Keep provider name clean, use isRealtime parameter to differentiate
-        onCompletion(
-            providerName,
-            config.model,
-            success,
-            audioDurationMs,
-            processingTimeMs,
-            true  // isRealtime = true for streaming service
-        )
-    }
-    
-    private func calculateProcessingTime() -> Int {
-        guard let startTime = processingStartTime else { return 0 }
-        let endTime = processingEndTime ?? Date()
-        let timeInterval = endTime.timeIntervalSince(startTime)
-        return Int(timeInterval * 1000) // Convert to milliseconds
-    }
-    
-    private func calculateAudioDuration() -> Int {
-        guard let startTime = audioRecordingStartTime,
-              let endTime = audioRecordingEndTime else { return 0 }
-        let timeInterval = endTime.timeIntervalSince(startTime)
-        return Int(timeInterval * 1000) // Convert to milliseconds
-    }
-
-    public func copyLastTranscriptionToClipboard() -> Bool {
+    public func copyLastTranscriptionToClipboard() -> Bool{
         guard !lastTranscription.isEmpty else {
             return false
         }
@@ -409,7 +321,7 @@ public class StreamingTranscriptionService: ObservableObject {
                 return STTError.transcriptionError(message)
             case .audioStreamError(let message):
                 return STTError.audioProcessingError(message)
-            case .invalidConfiguration(let message):
+            case .invalidConfiguration:
                 return STTError.invalidModel
             case .partialResultsError(let message):
                 return STTError.transcriptionError(message)

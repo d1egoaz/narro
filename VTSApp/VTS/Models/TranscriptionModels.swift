@@ -32,39 +32,25 @@ public struct ProviderConfig {
 
 public enum STTProviderType: String, CaseIterable, Codable {
     case openai = "OpenAI"
-    case groq = "Groq"
-    case deepgram = "Deepgram"
-    
+
     public var restModels: [String] {
-        switch self {
-        case .openai:
-            return ["gpt-4o-transcribe", "gpt-4o-mini-transcribe", "whisper-1"]
-        case .groq:
-            return ["whisper-large-v3-turbo", "whisper-large-v3"]
-        case .deepgram:
-            return ["nova-3", "nova-2"]
-        }
+        return ["whisper-1", "gpt-4o-transcribe", "gpt-4o-mini-transcribe"]
     }
-    
+
     public var realtimeModels: [String] {
-        switch self {
-        case .openai:
-            return ["gpt-4o-transcribe", "gpt-4o-mini-transcribe", "whisper-1"]
-        case .groq, .deepgram:
-            return [] // Future support
-        }
+        return ["gpt-4o-transcribe", "gpt-4o-mini-transcribe", "whisper-1"]
     }
-    
+
     /// Returns all available models (both REST and real-time)
     public var allModels: [String] {
-        return restModels + realtimeModels
+        return Array(Set(restModels + realtimeModels)).sorted()
     }
-    
+
     /// Checks if a model supports real-time streaming
     public func supportsRealtime(_ model: String) -> Bool {
         return realtimeModels.contains(model)
     }
-    
+
     /// Checks if the provider supports real-time streaming at all
     public var supportsRealtimeStreaming: Bool {
         return !realtimeModels.isEmpty

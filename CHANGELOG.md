@@ -5,6 +5,35 @@ All notable changes to VTS - Voice Typing Studio will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2025-10-24
+
+### Breaking Changes
+- **REMOVED**: Groq provider support (OpenAI-only now)
+- **REMOVED**: Deepgram provider support (OpenAI-only now)
+- **REMOVED**: Firebase Analytics and all telemetry tracking
+- **REMOVED**: Sparkle auto-update functionality
+
+### Added
+- **Hold-to-record mode** (push-to-talk): Press and hold hotkey to record, release to stop
+- Recording mode selector in Preferences → Hotkeys tab (toggle vs hold modes)
+- Automatic app copy script for development (`scripts/copy-to-applications.sh`)
+- Real-time mode toggle for OpenAI streaming vs REST API
+- Model selection UI for OpenAI transcription models
+
+### Fixed
+- OpenAI Realtime API endpoint (changed from conversational to transcription-only)
+- Language detection now defaults to English (prevents Chinese misdetection)
+- Message types for transcription session (uses `transcription_session.update`)
+- Model names for OpenAI transcription API (whisper-1, gpt-4o-transcribe, gpt-4o-mini-transcribe)
+- Removed read-only property assignment errors in onboarding and preferences
+- WebSocket connection for streaming transcription
+
+### Changed
+- Simplified to OpenAI-only architecture for easier maintenance
+- System is now focused on transcription quality over provider choice
+- Improved transcription accuracy with English language default
+- Streamlined onboarding process (removed provider selection, analytics consent)
+
 ## [1.1.2](https://github.com/j05u3/VTS/compare/v1.1.1...v1.1.2) (2025-10-05)
 
 
@@ -76,11 +105,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * update Sparkle public key in Info.plist for auto-update functionality ([41e8e33](https://github.com/j05u3/VTS/commit/41e8e330ba19f44b065cd600c898f69e8d77eb1c))
 
 ## [0.11.0](https://github.com/j05u3/VTS/compare/v0.10.0...v0.11.0) (2025-08-25)
-
-
-### Features
-
-* integrate basic telemetry for measuring future improvements ([404a661](https://github.com/j05u3/VTS/commit/404a661c5bbad5e0ab25b75e5419f46181335324))
 
 ## [0.10.0](https://github.com/j05u3/VTS/compare/v0.9.2...v0.10.0) (2025-08-25)
 

@@ -18,8 +18,10 @@ public class SimpleHotkeyManager: ObservableObject {
     @Published public var isEnabled = false
     @Published public var currentHotkeyString = "⌘⇧;" // Default fallback
     @Published public var currentCopyHotkeyString = "⌥⌘⇧C" // Default fallback for copy
-    
+
     public var onToggleRecording: (() -> Void)?
+    public var onStartRecording: (() -> Void)?
+    public var onStopRecording: (() -> Void)?
     public var onCopyLastTranscription: (() -> Void)?
     private var cancellables = Set<AnyCancellable>()
     private var hotkeyUpdateTimer: Timer?
@@ -264,19 +266,34 @@ public class SimpleHotkeyManager: ObservableObject {
         }
     }
     
-    public func registerHotkey() {
+    public func registerHotkey(mode: RecordingMode = .toggle) {
         guard !isEnabled else { return }
-        
+
         print("Registering global hotkeys:")
-        print("  Toggle Recording: \(currentHotkeyString)")
+        print("  Recording Mode: \(mode.rawValue)")
+        print("  Recording Hotkey: \(currentHotkeyString)")
         print("  Copy Last Transcription: \(currentCopyHotkeyString)")
-        
-        // Register the recording toggle hotkey handler
-        KeyboardShortcuts.onKeyDown(for: .toggleRecording) { [weak self] in
-            print("Global recording hotkey pressed!")
-            self?.onToggleRecording?()
+
+        // Register the recording hotkey handler based on mode
+        switch mode {
+        case .toggle:
+            // Toggle mode: press once to start, press again to stop
+            KeyboardShortcuts.onKeyDown(for: .toggleRecording) { [weak self] in
+                print("Global recording hotkey pressed (toggle mode)!")
+                self?.onToggleRecording?()
+            }
+        case .hold:
+            // Hold mode: press to start, release to stop
+            KeyboardShortcuts.onKeyDown(for: .toggleRecording) { [weak self] in
+                print("Global recording hotkey pressed (hold mode - starting)!")
+                self?.onStartRecording?()
+            }
+            KeyboardShortcuts.onKeyUp(for: .toggleRecording) { [weak self] in
+                print("Global recording hotkey released (hold mode - stopping)!")
+                self?.onStopRecording?()
+            }
         }
-        
+
         // Register the copy last transcription hotkey handler only if it's set
         if currentCopyHotkeyString != Self.NO_HOTKEY_SET {
             KeyboardShortcuts.onKeyDown(for: .copyLastTranscription) { [weak self] in
@@ -284,7 +301,7 @@ public class SimpleHotkeyManager: ObservableObject {
                 self?.onCopyLastTranscription?()
             }
         }
-        
+
         isEnabled = true
         print("Global hotkeys registered successfully")
     }

@@ -73,7 +73,7 @@ public enum OpenAIRealtimeMessage {
     public var messageType: String {
         switch self {
         case .sessionUpdate:
-            return "session.update"
+            return "transcription_session.update"
         case .inputAudioBufferAppend:
             return "input_audio_buffer.append"
         case .inputAudioBufferCommit:
@@ -154,10 +154,10 @@ public enum OpenAIRealtimeEvent {
         }
         
         switch type {
-        case "session.created":
+        case "transcription_session.created", "session.created":
             return .sessionCreated(messageDict)
-            
-        case "session.updated":
+
+        case "transcription_session.updated", "session.updated":
             return .sessionUpdated(messageDict)
             
         case "input_audio_buffer.committed":

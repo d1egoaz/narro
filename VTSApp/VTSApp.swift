@@ -2,20 +2,27 @@ import SwiftUI
 import KeyboardShortcuts
 import KeychainAccess
 import Combine
-import FirebaseCore
+
+// MARK: - Recording Mode
+public enum RecordingMode: String, CaseIterable, Codable {
+    case toggle = "Toggle"
+    case hold = "Hold"
+
+    var description: String {
+        switch self {
+        case .toggle:
+            return "Press once to start, press again to stop"
+        case .hold:
+            return "Hold key to record, release to stop"
+        }
+    }
+}
 
 @main
 struct VTSApp: App {
     
     init() {
-        // Configure Firebase
-        FirebaseApp.configure()
-        
-        // Initialize analytics consent manager (handles setCollectionEnabled automatically)
-        _ = AnalyticsConsentManager.shared
-        
-        // Track app launch (will only fire if consent is granted)
-        AnalyticsService.shared.trackAppLaunch()
+        // App initialization
     }
     @StateObject private var appState = AppState()
     @StateObject private var onboardingManager = OnboardingManager.shared
@@ -164,10 +171,6 @@ extension STTProviderType {
         switch self {
         case .openai:
             return "brain.head.profile"
-        case .groq:
-            return "bolt.fill"
-        case .deepgram:
-            return "waveform.circle.fill"
         }
     }
 }
@@ -183,8 +186,6 @@ class AppState: ObservableObject {
     private let hotkeyManager = SimpleHotkeyManager.shared
     private let notificationManager = NotificationManager.shared
     private let launchAtLoginManager = LaunchAtLoginManager.shared
-    private let sparkleUpdaterManager = SparkleUpdaterManager.shared
-    private let analyticsConsentManager = AnalyticsConsentManager.shared
     private var cancellables = Set<AnyCancellable>()
     
     private var settingsWindowController: SettingsWindowController?
@@ -192,12 +193,12 @@ class AppState: ObservableObject {
     
     // Keys for UserDefaults storage
     private let systemPromptKey = "systemPrompt"
-    private let deepgramKeywordsKey = "deepgramKeywords"
     private let useRealtimeKey = "useRealtime"
-    
+    private let recordingModeKey = "recordingMode"
+
     // Configuration state - now using APIKeyManager
     public static let maxSystemPromptLength = 1024
-    
+
     @Published var systemPrompt = "" {
         didSet {
             // Enforce character limit
@@ -207,35 +208,28 @@ class AppState: ObservableObject {
             saveSystemPrompt()
         }
     }
-    @Published var deepgramKeywords: [String] = [] {
-        didSet {
-            saveDeepgramKeywords()
-        }
-    }
     @Published var useRealtime = false {
         didSet {
             saveUseRealtime()
-            updateProvider() // Update provider when mode changes
+        }
+    }
+    @Published var recordingMode: RecordingMode = .toggle {
+        didSet {
+            saveRecordingMode()
+            // Re-register hotkeys with the new mode if app is initialized
+            if isMainAppInitialized {
+                hotkeyManager.unregisterHotkey()
+                hotkeyManager.registerHotkey(mode: recordingMode)
+            }
         }
     }
     @Published var isRecording = false
     @Published var isProcessing = false
     @Published var audioLevel: Float = 0.0
-    
-    // Analytics tracking properties
-    private var processStartTime: Date?        // When user first presses record button
-    private var audioRecordingStartTime: Date? // When audio recording actually starts  
-    private var audioRecordingEndTime: Date?   // When audio recording stops
-    
-    // Computed properties that delegate to APIKeyManager with proper change notifications
+
+    // OpenAI is the only supported provider
     var selectedProvider: STTProviderType {
-        get { apiKeyManager.selectedProvider }
-        set { 
-            objectWillChange.send()
-            apiKeyManager.selectedProvider = newValue
-            // Update model to default when provider changes
-            apiKeyManager.selectedModel = newValue.restModels.first ?? ""
-        }
+        return .openai
     }
     
     var selectedModel: String {
@@ -254,11 +248,11 @@ class AppState: ObservableObject {
     var restTranscriptionServiceInstance: RestTranscriptionService {
         return restTranscriptionService
     }
-    
+
     var streamingTranscriptionServiceInstance: StreamingTranscriptionService {
         return streamingTranscriptionService
     }
-    
+
     /// Returns the active transcription service based on current settings
     var activeTranscriptionService: Any {
         if useRealtime && selectedProvider.supportsRealtimeStreaming {
@@ -267,35 +261,27 @@ class AppState: ObservableObject {
             return restTranscriptionService
         }
     }
-    
+
     var deviceManagerService: DeviceManager {
         return deviceManager
     }
-    
+
     var apiKeyManagerService: APIKeyManager {
         return apiKeyManager
     }
-    
+
     var hotkeyManagerService: SimpleHotkeyManager {
         return hotkeyManager
     }
-    
+
     var launchAtLoginManagerService: LaunchAtLoginManager {
         return launchAtLoginManager
     }
-    
-    var sparkleUpdaterManagerService: SparkleUpdaterManager {
-        return sparkleUpdaterManager
-    }
-    
-    var analyticsConsentManagerService: AnalyticsConsentManager {
-        return analyticsConsentManager
-    }
-    
+
     init() {
         loadSystemPrompt()
-        loadDeepgramKeywords()
         loadUseRealtime()
+        loadRecordingMode()
         setupTranscriptionServices()
         setupObservableObjectBindings()
         
@@ -380,18 +366,6 @@ class AppState: ObservableObject {
                 self?.objectWillChange.send()
             }
             .store(in: &cancellables)
-        
-        sparkleUpdaterManager.objectWillChange
-            .sink { [weak self] _ in
-                self?.objectWillChange.send()
-            }
-            .store(in: &cancellables)
-        
-        analyticsConsentManager.objectWillChange
-            .sink { [weak self] _ in
-                self?.objectWillChange.send()
-            }
-            .store(in: &cancellables)
     }
     
     private func initializeAfterLaunch() {
@@ -407,10 +381,10 @@ class AppState: ObservableObject {
     private func setupStatusBar() {
         // Initialize the status bar controller first
         statusBarController.initialize()
-        
+
         // Pass the transcription services for context menu previews
         statusBarController.setTranscriptionServices(rest: restTranscriptionService, streaming: streamingTranscriptionService)
-        
+
         statusBarController.setPopoverContent {
             ContentView()
                 .environmentObject(self)
@@ -438,13 +412,21 @@ class AppState: ObservableObject {
         hotkeyManager.onToggleRecording = { [weak self] in
             self?.toggleRecording()
         }
-        
+
+        hotkeyManager.onStartRecording = { [weak self] in
+            self?.startRecording()
+        }
+
+        hotkeyManager.onStopRecording = { [weak self] in
+            self?.stopRecording()
+        }
+
         hotkeyManager.onCopyLastTranscription = { [weak self] in
             self?.copyLastTranscription()
         }
-        
-        // Register the hotkeys
-        hotkeyManager.registerHotkey()
+
+        // Register the hotkeys with the current recording mode
+        hotkeyManager.registerHotkey(mode: recordingMode)
     }
     
     private func setupNotifications() {
@@ -463,52 +445,9 @@ class AppState: ObservableObject {
     }
     
     private func setupTranscriptionServices() {
-        updateProvider()
-        
-        // Set up analytics callback for REST service
-        restTranscriptionService.onTranscriptionCompleted = { [weak self] provider, model, success, audioDurationMs, processingTimeMs, isRealtime in
-            AnalyticsService.shared.trackTranscriptionCompleted(
-                provider: provider,
-                model: model,
-                success: success,
-                audioDurationMs: audioDurationMs,
-                processingTimeMs: processingTimeMs,
-                isRealtime: isRealtime
-            )
-        }
-        
-        // Set up analytics callback for streaming service
-        streamingTranscriptionService.onTranscriptionCompleted = { [weak self] provider, model, success, audioDurationMs, processingTimeMs, isRealtime in
-            AnalyticsService.shared.trackTranscriptionCompleted(
-                provider: provider,
-                model: model,
-                success: success,
-                audioDurationMs: audioDurationMs,
-                processingTimeMs: processingTimeMs,
-                isRealtime: isRealtime
-            )
-        }
-    }
-    
-    private func updateProvider() {
-        // Set up REST providers
-        switch selectedProvider {
-        case .openai:
-            restTranscriptionService.setProvider(OpenAIRestProvider())
-        case .groq:
-            restTranscriptionService.setProvider(GroqRestProvider())
-        case .deepgram:
-            restTranscriptionService.setProvider(DeepgramRestProvider())
-        }
-        
-        // Set up streaming providers (only OpenAI supported for now)
-        switch selectedProvider {
-        case .openai:
-            streamingTranscriptionService.setProvider(OpenAIStreamingProvider())
-        case .groq, .deepgram:
-            // Future support - no streaming providers available yet
-            break
-        }
+        // Only OpenAI is supported
+        restTranscriptionService.setProvider(OpenAIRestProvider())
+        streamingTranscriptionService.setProvider(OpenAIStreamingProvider())
     }
     
     func toggleRecording() {
@@ -533,17 +472,9 @@ class AppState: ObservableObject {
             return
         }
         
-        updateProvider()
-        
-        // Record process start time (when user pressed the hotkey)
-        processStartTime = Date()
-        
         do {
             print("Starting audio capture...")
-            
-            // Record when audio recording actually starts
-            audioRecordingStartTime = Date()
-            
+
             let audioStream = try captureEngine.start(deviceID: deviceManager.preferredDeviceID)
             
             // Get the API key securely from keychain
@@ -553,42 +484,27 @@ class AppState: ObservableObject {
                 return
             }
             
-            // Configure provider-specific settings
-            let providerSystemPrompt = (selectedProvider != .deepgram && !systemPrompt.isEmpty) ? systemPrompt : nil
-            let providerKeywords = (selectedProvider == .deepgram && selectedModel != "nova-3" && !deepgramKeywords.isEmpty) ? deepgramKeywords : nil
-            
+            // Configure OpenAI settings
             let config = ProviderConfig(
                 apiKey: apiKey,
                 model: selectedModel,
-                systemPrompt: providerSystemPrompt,
-                keywords: providerKeywords
+                systemPrompt: !systemPrompt.isEmpty ? systemPrompt : nil,
+                language: "en"
             )
-            
+
             // Determine which transcription mode to use
             let useStreaming = useRealtime && selectedProvider.supportsRealtimeStreaming && selectedProvider.supportsRealtime(selectedModel)
-            
-            print("Starting transcription with \(selectedProvider.rawValue) using model \(selectedModel) in \(useStreaming ? "real-time streaming" : "REST") mode")
-            
+
+            print("Starting transcription with OpenAI using model \(selectedModel) in \(useStreaming ? "real-time streaming" : "REST") mode")
+
             if useStreaming {
                 // Use streaming transcription service
-                streamingTranscriptionService.setTimingData(
-                    processStart: processStartTime,
-                    audioStart: audioRecordingStartTime,
-                    audioEnd: nil
-                )
-                
                 streamingTranscriptionService.startTranscription(
                     audioStream: audioStream,
                     config: config
                 )
             } else {
                 // Use REST transcription service
-                restTranscriptionService.setTimingData(
-                    processStart: processStartTime,
-                    audioStart: audioRecordingStartTime,
-                    audioEnd: nil
-                )
-                
                 restTranscriptionService.startTranscription(
                     audioStream: audioStream,
                     config: config,
@@ -598,10 +514,7 @@ class AppState: ObservableObject {
             
             isRecording = true
             statusBarController.updateRecordingState(true)
-            
-            // Track analytics event for start recording
-            AnalyticsService.shared.trackStartRecording()
-            
+
             print("Voice recording started successfully")
         } catch {
             print("Failed to start recording: \(error)")
@@ -610,27 +523,6 @@ class AppState: ObservableObject {
     }
     
     private func stopRecording() {
-        // Record when audio recording stops
-        audioRecordingEndTime = Date()
-        
-        // Determine which service was being used
-        let wasUsingStreaming = useRealtime && selectedProvider.supportsRealtimeStreaming
-        
-        // Update timing data in the appropriate transcription service
-        if wasUsingStreaming {
-            streamingTranscriptionService.setTimingData(
-                processStart: processStartTime,
-                audioStart: audioRecordingStartTime,
-                audioEnd: audioRecordingEndTime
-            )
-        } else {
-            restTranscriptionService.setTimingData(
-                processStart: processStartTime,
-                audioStart: audioRecordingStartTime,
-                audioEnd: audioRecordingEndTime
-            )
-        }
-        
         captureEngine.stop()
         // Don't cancel transcription - let it finish processing the collected audio
         isRecording = false
@@ -654,10 +546,10 @@ class AppState: ObservableObject {
         // Check both services for the last transcription
         let restLastTranscription = restTranscriptionService.lastTranscription
         let streamingLastTranscription = streamingTranscriptionService.lastTranscription
-        
+
         // Use the most recent non-empty transcription
         let lastTranscription = !streamingLastTranscription.isEmpty ? streamingLastTranscription : restLastTranscription
-        
+
         if !lastTranscription.isEmpty {
             print("Last transcription: '\(lastTranscription)'")
             showTranscriptionAlert(lastTranscription)
@@ -671,7 +563,7 @@ class AppState: ObservableObject {
         // Try to copy from the service that has the most recent transcription
         let restLast = restTranscriptionService.lastTranscription
         let streamingLast = streamingTranscriptionService.lastTranscription
-        
+
         if !streamingLast.isEmpty && streamingTranscriptionService.copyLastTranscriptionToClipboard() {
             print("Transcribed text copied to clipboard: '\(streamingLast)'")
         } else if !restLast.isEmpty && restTranscriptionService.copyLastTranscriptionToClipboard() {
@@ -736,26 +628,23 @@ class AppState: ObservableObject {
     private func loadSystemPrompt() {
         systemPrompt = UserDefaults.standard.string(forKey: systemPromptKey) ?? ""
     }
-    
-    private func saveDeepgramKeywords() {
-        let keywordData = try? JSONEncoder().encode(deepgramKeywords)
-        UserDefaults.standard.set(keywordData, forKey: deepgramKeywordsKey)
-    }
-    
-    private func loadDeepgramKeywords() {
-        guard let keywordData = UserDefaults.standard.data(forKey: deepgramKeywordsKey),
-              let keywords = try? JSONDecoder().decode([String].self, from: keywordData) else {
-            deepgramKeywords = []
-            return
-        }
-        deepgramKeywords = keywords
-    }
-    
+
     private func saveUseRealtime() {
         UserDefaults.standard.set(useRealtime, forKey: useRealtimeKey)
     }
-    
+
     private func loadUseRealtime() {
         useRealtime = UserDefaults.standard.bool(forKey: useRealtimeKey)
+    }
+
+    private func saveRecordingMode() {
+        UserDefaults.standard.set(recordingMode.rawValue, forKey: recordingModeKey)
+    }
+
+    private func loadRecordingMode() {
+        if let modeString = UserDefaults.standard.string(forKey: recordingModeKey),
+           let mode = RecordingMode(rawValue: modeString) {
+            recordingMode = mode
+        }
     }
 }

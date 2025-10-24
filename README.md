@@ -1,9 +1,32 @@
-# VTS - Voice Typing Studio
+# VTS - Voice Typing Studio (Modified)
 <p align="center">
   <img src="public/logo.png" alt="VTS Logo" width="150">
   <br>
   <strong>The open-source macOS dictation replacement you've been waiting for! 🚀</strong>
 </p>
+
+> 🍴 **This is a modified fork** of the original [VTS by Josue Julcarima](https://github.com/j05u3/VTS)
+>
+> This version is streamlined for **OpenAI-only transcription** with additional features.
+
+## Modifications in This Fork
+
+### ✂️ Removed
+- 🚫 Firebase Analytics (all telemetry removed)
+- 🚫 Groq provider support
+- 🚫 Deepgram provider support
+- 🚫 Sparkle auto-update system
+
+### ✨ Added
+- 🎤 **Hold-to-Record Mode** (push-to-talk) alongside toggle mode
+- 🛠️ Build script for automatic copying to ~/Applications
+
+### 🔧 Fixed
+- ✅ OpenAI Realtime API (now uses transcription-only endpoint)
+- ✅ Language detection defaults to English
+- ✅ Improved transcription accuracy and reliability
+
+---
 
 > **🔊 Turn on your sound!** This demo includes audio to showcase the real-time transcription experience.
 
@@ -50,7 +73,7 @@ brew install j05u3/tap/voice-typing-studio
 
 ---
 
-Transform your voice into text instantly with the power of **OpenAI**, **Groq**, and **Deepgram** APIs. Say goodbye to macOS dictation limitations and hello to lightning-fast, accurate transcription with your own custom hotkeys! ⚡️
+Transform your voice into text instantly with the power of **OpenAI** API. Say goodbye to macOS dictation limitations and hello to lightning-fast, accurate transcription with your own custom hotkeys! ⚡️
 
 ## 📋 Table of Contents
 
@@ -73,29 +96,27 @@ Transform your voice into text instantly with the power of **OpenAI**, **Groq**,
 - [License](#-license)
 - [Acknowledgements](#-acknowledgements)
 
-## ✨ Why Choose VTS?
+## ✨ Why Choose This Version?
 
-- 🤖 **AI-Powered Accuracy**: Leverage OpenAI, Groq, and Deepgram models for superior transcription
-- 🔑 **Your Keys, Your Control**: Bring your own API keys - no subscriptions, no limits
+- 🤖 **AI-Powered Accuracy**: Leverage OpenAI's powerful transcription models
+- 🎤 **Hold-to-Record Mode**: New push-to-talk feature alongside traditional toggle mode
+- 🔑 **Your Keys, Your Control**: Bring your own API key - no subscriptions, no limits
 - 🔄 **Drop-in Replacement**: Works exactly like macOS dictation, but better!
 - ⌨️ **Your Shortcut, Your Rules**: Fully customizable global hotkeys (default: ⌘⇧;)
 - 🎯 **Smart Device Management**: Intelligent microphone priority with seamless fallback
-- 💬 **Context-Aware**: Custom system prompt boosts accuracy for your specific needs  
+- 💬 **Context-Aware**: Custom system prompt boosts accuracy for your specific needs
+- 🌐 **English by Default**: Language detection set to English for better accuracy
 - 🔓 **100% Open Source**: Full transparency, community-driven, modify as you wish
 
 ## API Key Setup
 
-After installing VTS, you'll need an API key from one of these providers:
+After installing VTS, you'll need an OpenAI API key:
 
 - **OpenAI**: [Get your API key here](https://platform.openai.com/api-keys)
-- **Groq**: [Get your API key here](https://console.groq.com/keys)
-- **Deepgram**: [Get your API key here](https://console.deepgram.com/project/keys)
-
-*Only one API key is required - choose the provider you prefer!*
 
 **Requirements:**
 - **macOS 14.0+** (Apple Silicon & Intel supported)
-- **API key** from OpenAI, Groq, or Deepgram
+- **OpenAI API key** (supports multiple models: whisper-1, gpt-4o-transcribe, gpt-4o-mini-transcribe)
 
 ## 📖 Usage Guide
 
@@ -142,7 +163,6 @@ Getting started in 34 seconds:
 - **API keys are safe**: Keys are stored in Keychain
 - **TLS encryption**: All API communication uses HTTPS
 - **Microphone permission**: Explicit user consent required for audio access
-- **Basic telemetry**: We collect minimal usage analytics in compliance with GDPR regulations
 
 ## 🛠️ Troubleshooting
 
