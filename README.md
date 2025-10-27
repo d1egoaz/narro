@@ -39,33 +39,25 @@ https://github.com/user-attachments/assets/bc77c14b-863c-418f-8564-175d6300ce2b
 ---
 
 <p align="center">
-  <a href="https://github.com/j05u3/VTS/releases/latest">
+  <a href="https://github.com/d1egoaz/narro/releases/latest">
     <img src="https://img.shields.io/badge/📦%20Download%20DMG-Latest%20Release-brightgreen?style=for-the-badge&logo=apple&logoColor=white&labelColor=000000&color=007ACC" alt="Download DMG" width="300">
   </a>
 </p>
 
 <p align="center">
-  <strong>Or install with Homebrew:</strong>
-</p>
-
-```bash
-brew install j05u3/tap/voice-typing-studio
-```
-
-<p align="center">
   <!-- Social and Community Badges -->
-  <a href="https://github.com/j05u3/VTS/stargazers"><img alt="GitHub Stars" src="https://img.shields.io/github/stars/j05u3/VTS?style=for-the-badge&logo=github&color=gold"></a>
-  <a href="https://github.com/j05u3/VTS/network/members"><img alt="GitHub Forks" src="https://img.shields.io/github/forks/j05u3/VTS?style=for-the-badge&logo=github&color=blueviolet"></a>
+  <a href="https://github.com/d1egoaz/narro/stargazers"><img alt="GitHub Stars" src="https://img.shields.io/github/stars/d1egoaz/narro?style=for-the-badge&logo=github&color=gold"></a>
+  <a href="https://github.com/d1egoaz/narro/network/members"><img alt="GitHub Forks" src="https://img.shields.io/github/forks/d1egoaz/narro?style=for-the-badge&logo=github&color=blueviolet"></a>
   <br>
   <!-- Status and Release Badges -->
-  <a href="https://github.com/j05u3/VTS/releases/latest"><img alt="Latest Release" src="https://img.shields.io/github/v/release/j05u3/VTS?style=for-the-badge&color=brightgreen"></a>
-  <a href="https://github.com/j05u3/VTS/releases"><img alt="GitHub Downloads" src="https://img.shields.io/github/downloads/j05u3/VTS/total?style=for-the-badge&logo=github&color=success"></a>
+  <a href="https://github.com/d1egoaz/narro/releases/latest"><img alt="Latest Release" src="https://img.shields.io/github/v/release/d1egoaz/narro?style=for-the-badge&color=brightgreen"></a>
+  <a href="https://github.com/d1egoaz/narro/releases"><img alt="GitHub Downloads" src="https://img.shields.io/github/downloads/d1egoaz/narro/total?style=for-the-badge&logo=github&color=success"></a>
   <a href="https://opensource.org/licenses/MIT"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge"></a>
   <br>
   <!-- Development Activity Badges -->
-  <a href="https://github.com/j05u3/VTS/actions/workflows/build-and-distribute.yml"><img alt="Build Status" src="https://img.shields.io/github/actions/workflow/status/j05u3/VTS/build-and-distribute.yml?style=for-the-badge&logo=githubactions"></a>
-  <a href="https://github.com/j05u3/VTS/issues"><img alt="GitHub Issues" src="https://img.shields.io/github/issues/j05u3/VTS?style=for-the-badge&logo=github&color=red"></a>
-  <a href="https://github.com/j05u3/VTS/pulls"><img alt="GitHub Pull Requests" src="https://img.shields.io/github/issues-pr/j05u3/VTS?style=for-the-badge&logo=github&color=yellow"></a>
+  <a href="https://github.com/d1egoaz/narro/actions/workflows/build-and-release.yml"><img alt="Build Status" src="https://img.shields.io/github/actions/workflow/status/d1egoaz/narro/build-and-release.yml?branch=main&style=for-the-badge&logo=githubactions"></a>
+  <a href="https://github.com/d1egoaz/narro/issues"><img alt="GitHub Issues" src="https://img.shields.io/github/issues/d1egoaz/narro?style=for-the-badge&logo=github&color=red"></a>
+  <a href="https://github.com/d1egoaz/narro/pulls"><img alt="GitHub Pull Requests" src="https://img.shields.io/github/issues-pr/d1egoaz/narro?style=for-the-badge&logo=github&color=yellow"></a>
   <br>
   <!-- Platform Badge -->
   <a href="https://developer.apple.com/macos/"><img alt="Platform" src="https://img.shields.io/badge/platform-macOS%2014.0%2B-blue?style=for-the-badge&logo=apple"></a>
@@ -187,7 +179,7 @@ Getting started in 34 seconds:
 
 1. **Clone the repository:**
 ```bash
-git clone https://github.com/YOUR_USERNAME/narro.git
+git clone https://github.com/d1egoaz/narro.git
 cd narro
 ```
 
@@ -267,12 +259,10 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to contribute to Narro
 
 ## 💬 Feedback
 
-Have feedback, suggestions, or issues? We'd love to hear from you! 
+Have feedback, suggestions, or issues? We'd love to hear from you!
 
-**📧 [Send us your feedback](mailto:josueajc@gmail.com?subject=[Narro%20Feedback]%20Your%20thoughts%20on%20Narro)** - Quick and direct way to reach us
-
-You can also:
-- 🐛 [Report bugs or request features](https://github.com/j05u3/VTS/issues) on GitHub
+You can:
+- 🐛 [Report bugs or request features](https://github.com/d1egoaz/narro/issues) on GitHub
 - 💡 Share your ideas for improvements
 - ⭐ Star the project if you find it useful!
 

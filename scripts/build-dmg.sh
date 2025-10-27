@@ -16,12 +16,12 @@
 set -e
 
 # Configuration
-APP_NAME="${APP_NAME:-"VTS"}"
-BUNDLE_ID="${BUNDLE_ID:-"com.voicetypestudio.app"}"
-SCHEME="VTSApp"
-PROJECT="VTSApp.xcodeproj"
-PRODUCT_NAME="${PRODUCT_NAME:-"VTS"}"
-APPLE_TEAM_ID="${APPLE_TEAM_ID:-"887583966J"}"
+APP_NAME="${APP_NAME:-"Narro"}"
+BUNDLE_ID="${BUNDLE_ID:-"ca.diegoa.narro"}"
+SCHEME="NarroApp"
+PROJECT="NarroApp.xcodeproj"
+PRODUCT_NAME="${PRODUCT_NAME:-"Narro"}"
+APPLE_TEAM_ID="${APPLE_TEAM_ID:-""}"
 
 # Global variables
 KEYCHAIN_PATH=""
@@ -138,16 +138,16 @@ handle_version() {
         
         # Update Info.plist with CI version
         log_info "Updating version in Info.plist to $VERSION"
-        /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $VERSION" VTSApp/Info.plist
-        /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $VERSION" VTSApp/Info.plist
+        /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $VERSION" NarroApp/Info.plist
+        /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $VERSION" NarroApp/Info.plist
         
         # Set GitHub output
         set_github_output "version" "$VERSION_WITH_V"
         set_github_output "version_number" "$VERSION"
     else
         # Local: Read from Info.plist
-        VERSION=$(/usr/libexec/PlistBuddy -c "Print CFBundleShortVersionString" VTSApp/Info.plist)
-        BUILD_NUMBER=$(/usr/libexec/PlistBuddy -c "Print CFBundleVersion" VTSApp/Info.plist)
+        VERSION=$(/usr/libexec/PlistBuddy -c "Print CFBundleShortVersionString" NarroApp/Info.plist)
+        BUILD_NUMBER=$(/usr/libexec/PlistBuddy -c "Print CFBundleVersion" NarroApp/Info.plist)
         
         if [ -z "$VERSION" ]; then
             log_error "Could not read version from Info.plist"
@@ -403,7 +403,7 @@ sign_app_bundle() {
             --force \
             --options runtime \
             --timestamp \
-            --entitlements "VTSApp/VTSApp.entitlements" \
+            --entitlements "NarroApp/NarroApp.entitlements" \
             --sign "$signing_identity" \
             "$APP_PATH"
         
@@ -544,8 +544,8 @@ cleanup_keychain() {
 # Main execution
 main() {
     if [ "$CI_MODE" != "true" ]; then
-        echo "🚀 VTS DMG Build Script"
-        echo "========================"
+        echo "🚀 Narro DMG Build Script"
+        echo "=========================="
     fi
     
     # Parse command line arguments (local mode only)
