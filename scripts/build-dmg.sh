@@ -109,6 +109,20 @@ check_dependencies() {
             log_error "Failed to install create-dmg"
             exit 1
         fi
+
+        # Add npm global bin to PATH
+        NPM_GLOBAL_PREFIX=$(npm prefix -g 2>/dev/null)
+        if [ -n "$NPM_GLOBAL_PREFIX" ] && [ -d "$NPM_GLOBAL_PREFIX/bin" ]; then
+            export PATH="$NPM_GLOBAL_PREFIX/bin:$PATH"
+            log_info "Added $NPM_GLOBAL_PREFIX/bin to PATH"
+        fi
+
+        # Verify installation
+        if ! command -v create-dmg &> /dev/null; then
+            log_error "create-dmg installed but not found in PATH"
+            log_error "Try adding to your shell: export PATH=\"$NPM_GLOBAL_PREFIX/bin:\$PATH\""
+            exit 1
+        fi
     else
         # Check if it's the modern create-dmg (Node.js version has --version flag)
         if ! create-dmg --version &> /dev/null; then
@@ -205,13 +219,19 @@ build_app() {
     
     # Create archive
     log_info "Creating archive..."
-    
-    # Set development team
-    local team_args=""
-    if [ -n "$APPLE_TEAM_ID" ]; then
-        team_args="DEVELOPMENT_TEAM=$APPLE_TEAM_ID"
+
+    # Set code signing arguments based on SKIP_SIGNING
+    local signing_args=""
+    if [ "$SKIP_SIGNING" = "true" ]; then
+        log_info "Disabling code signing for build..."
+        signing_args="CODE_SIGN_IDENTITY=- CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO"
+    else
+        # Set development team for signed builds
+        if [ -n "$APPLE_TEAM_ID" ]; then
+            signing_args="DEVELOPMENT_TEAM=$APPLE_TEAM_ID"
+        fi
     fi
-    
+
     if ! xcodebuild \
         -project "$PROJECT" \
         -scheme "$SCHEME" \
@@ -219,24 +239,43 @@ build_app() {
         -archivePath "build/$APP_NAME.xcarchive" \
         ARCHS="arm64 x86_64" \
         ONLY_ACTIVE_ARCH=NO \
-        $team_args \
+        $signing_args \
         archive; then
         log_error "Failed to create archive"
         exit 1
     fi
     
     log_success "Archive created successfully"
-    
+
     # Export app
     log_info "Exporting application..."
-    if ! xcodebuild \
-        -exportArchive \
-        -archivePath "build/$APP_NAME.xcarchive" \
-        -exportOptionsPlist scripts/ExportOptions.plist \
-        -exportPath build/export \
-        $team_args; then
-        log_error "Failed to export application"
-        exit 1
+
+    mkdir -p build/export
+
+    if [ "$SKIP_SIGNING" = "true" ]; then
+        # For unsigned builds, copy directly from archive (no team info needed)
+        log_info "Copying unsigned app from archive..."
+        local archive_app="build/$APP_NAME.xcarchive/Products/Applications/$PRODUCT_NAME.app"
+
+        if [ ! -d "$archive_app" ]; then
+            log_error "App not found in archive at: $archive_app"
+            exit 1
+        fi
+
+        cp -R "$archive_app" "build/export/"
+        log_success "App copied from archive"
+    else
+        # For signed builds, use proper export process
+        if ! xcodebuild \
+            -exportArchive \
+            -archivePath "build/$APP_NAME.xcarchive" \
+            -exportOptionsPlist scripts/ExportOptions.plist \
+            -exportPath build/export \
+            $signing_args; then
+            log_error "Failed to export application"
+            exit 1
+        fi
+        log_success "App exported successfully"
     fi
     
     # Verify the build
