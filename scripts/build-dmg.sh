@@ -362,60 +362,97 @@ create_dmg() {
         log_info "App bundle signature verified"
     fi
     
-    log_info "Using sindresorhus/create-dmg for professional DMG creation..."
-    
-    # Options for create-dmg
-    CREATE_DMG_ARGS=("--overwrite")
-    
-    # Set custom title if needed
-    if [ ${#APP_NAME} -le 27 ]; then
-        CREATE_DMG_ARGS+=("--dmg-title" "$APP_NAME $VERSION")
+    # For unsigned builds, use hdiutil directly (create-dmg auto-signs even without --identity)
+    if [ "$SKIP_SIGNING" = "true" ]; then
+        log_info "Creating unsigned DMG with hdiutil..."
+
+        # Create temporary directory for DMG contents
+        local tmp_dir=$(mktemp -d)
+        cp -R "$APP_PATH" "$tmp_dir/"
+
+        # Create DMG using hdiutil
+        if hdiutil create -volname "$APP_NAME $VERSION" \
+            -srcfolder "$tmp_dir" \
+            -ov -format UDZO \
+            "$DMG_NAME"; then
+
+            # Clean up
+            rm -rf "$tmp_dir"
+
+            log_success "DMG created: $DMG_NAME"
+
+            # Show file size
+            SIZE=$(du -h "$DMG_NAME" | cut -f1)
+            log_info "DMG size: $SIZE"
+
+            # Store DMG name for later steps
+            echo "$DMG_NAME" > dmg_name.txt
+        else
+            rm -rf "$tmp_dir"
+            log_error "hdiutil DMG creation failed"
+            exit 1
+        fi
+    else
+        # For signed builds, use create-dmg with signing
+        log_info "Using sindresorhus/create-dmg for signed DMG creation..."
+
+        # Options for create-dmg
+        CREATE_DMG_ARGS=("--overwrite")
+
+        # Set custom title if needed
+        if [ ${#APP_NAME} -le 27 ]; then
+            CREATE_DMG_ARGS+=("--dmg-title" "$APP_NAME $VERSION")
+        fi
+
+        # Add DMG signing identity
+        local signing_identity
+        if signing_identity=$(get_signing_identity); then
+            log_info "Will sign DMG container with: $signing_identity"
+            CREATE_DMG_ARGS+=("--identity" "$signing_identity")
+        else
+            log_error "No signing identity found but signing is required"
+            exit 1
+        fi
+
+        # Create the DMG
+        if ! create-dmg "${CREATE_DMG_ARGS[@]}" "$APP_PATH"; then
+            log_error "create-dmg failed"
+            exit 1
+        fi
     fi
-    
-    # Add DMG signing identity if available (this signs the DMG container, not the app)
-    local signing_identity
-    if [ "$SKIP_SIGNING" != "true" ] && signing_identity=$(get_signing_identity); then
-        log_info "Will sign DMG container with: $signing_identity"
-        CREATE_DMG_ARGS+=("--identity" "$signing_identity")
-    fi
-    
-    # Create the DMG
-    if create-dmg "${CREATE_DMG_ARGS[@]}" "$APP_PATH"; then
+
+    # For signed builds using create-dmg, handle the created DMG
+    if [ "$SKIP_SIGNING" != "true" ]; then
         # Find the created DMG
         CREATED_DMG=$(find . -name "*$APP_NAME*.dmg" -type f -newer "$APP_PATH" | head -n1)
-        
+
         if [ -n "$CREATED_DMG" ] && [ -f "$CREATED_DMG" ]; then
             # Rename to our expected name if different
             if [ "$CREATED_DMG" != "./$DMG_NAME" ]; then
                 mv "$CREATED_DMG" "$DMG_NAME"
             fi
-            
+
             log_success "DMG created: $DMG_NAME"
-            
+
             # Show file size
             SIZE=$(du -h "$DMG_NAME" | cut -f1)
             log_info "DMG size: $SIZE"
-            
+
             # Store DMG name for later steps
             echo "$DMG_NAME" > dmg_name.txt
-            
-            # Verify DMG signature if signing was enabled
-            if [ "$SKIP_SIGNING" != "true" ]; then
-                log_info "Verifying DMG signature..."
-                if codesign --verify --verbose "$DMG_NAME" 2>/dev/null; then
-                    log_success "DMG signature verified"
-                else
-                    log_error "DMG signature verification failed"
-                    exit 1
-                fi
+
+            # Verify DMG signature
+            log_info "Verifying DMG signature..."
+            if codesign --verify --verbose "$DMG_NAME" 2>/dev/null; then
+                log_success "DMG signature verified"
+            else
+                log_error "DMG signature verification failed"
+                exit 1
             fi
         else
             log_error "Could not find created DMG file"
             exit 1
         fi
-    else
-        log_error "DMG creation failed"
-        exit 1
     fi
 }
 
