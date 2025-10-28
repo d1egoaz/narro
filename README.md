@@ -41,10 +41,9 @@ Transform your voice into text instantly with the power of **OpenAI** API. Say g
 - [Development](#%E2%80%8D-development)
   - [Requirements](#development-requirements)
   - [Building from Source](#building-from-source)
+  - [Building and Releasing DMG](#building-and-releasing-dmg)
   - [Architecture](#architecture)
   - [Contributing](#contributing)
-- [Roadmap](#%EF%B8%8F-roadmap)
-- [Feedback](#-feedback)
 - [License](#-license)
 - [Acknowledgements](#-acknowledgements)
 
@@ -143,6 +142,45 @@ open NarroApp.xcodeproj
 # Build via command line
 xcodebuild -project NarroApp.xcodeproj -scheme NarroApp build
 ```
+
+### Building and Releasing DMG
+
+For creating distributable DMG packages:
+
+#### Quick Local Build
+```bash
+# Build DMG with code signing (requires Developer ID certificate)
+./scripts/build-dmg.sh
+
+# OR build without signing (for testing only)
+./scripts/build-dmg.sh --skip-signing
+```
+
+#### Creating a Release
+
+The simplest way to release Narro is using the automated release script:
+
+**Prerequisites:**
+- Install GitHub CLI: `brew install gh`
+- Authenticate: `gh auth login`
+
+**Create a release:**
+```bash
+# Build, tag, and release in one command
+./scripts/release.sh v1.2.0
+
+# Or without code signing (development builds)
+./scripts/release.sh v1.2.0 --skip-signing
+```
+
+This script will:
+1. Update version in Info.plist
+2. Build the universal DMG (Intel + Apple Silicon)
+3. Create a git tag and push it
+4. Create a GitHub release with the DMG attached
+5. Upload SHA-256 checksums for verification
+
+Users can then download the DMG directly from: `https://github.com/d1egoaz/narro/releases`
 
 ### Architecture
 
