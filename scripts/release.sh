@@ -60,22 +60,27 @@ check_prerequisites() {
 
 # Parse arguments
 if [ $# -lt 1 ]; then
-    log_error "Usage: $0 <version> [--skip-signing]"
+    log_error "Usage: $0 <version> [--sign]"
     echo ""
     echo "Examples:"
-    echo "  $0 v1.2.0                # Build and release with signing"
-    echo "  $0 v1.2.0 --skip-signing # Build and release without signing"
+    echo "  $0 v1.2.0        # Build and release without signing (default)"
+    echo "  $0 v1.2.0 --sign # Build and release with code signing (requires certificate)"
     exit 1
 fi
 
 VERSION="$1"
-SKIP_SIGNING=""
+SKIP_SIGNING="--skip-signing"  # Default to unsigned
 
 # Parse optional flags
 shift
 while [[ $# -gt 0 ]]; do
     case $1 in
+        --sign)
+            SKIP_SIGNING=""  # Enable signing
+            shift
+            ;;
         --skip-signing)
+            # For backwards compatibility
             SKIP_SIGNING="--skip-signing"
             shift
             ;;
@@ -99,7 +104,10 @@ echo "🚀 Narro Release Script"
 echo "======================="
 echo "Version: $VERSION"
 if [ -n "$SKIP_SIGNING" ]; then
-    log_warning "Building WITHOUT code signing"
+    echo "🔓 Build Mode: Unsigned (no certificate required)"
+    echo "   Users will need to right-click > Open on first launch"
+else
+    echo "🔐 Build Mode: Signed (requires Developer ID certificate)"
 fi
 echo ""
 
@@ -157,13 +165,33 @@ log_success "Tag created and pushed"
 
 # Step 5: Generate release notes
 log_info "Generating release notes..."
+
+# Add unsigned app instructions if not signed
+UNSIGNED_NOTICE=""
+if [ -n "$SKIP_SIGNING" ]; then
+    UNSIGNED_NOTICE=$(cat <<'EOF'
+
+### ⚠️ Unsigned Application Notice
+This build is **not code-signed**. On first launch, macOS will show a security warning.
+
+**To open Narro:**
+1. Right-click (or Control-click) on Narro in your Applications folder
+2. Select "Open" from the menu
+3. Click "Open" in the dialog that appears
+4. After the first launch, you can open it normally
+
+This is a standard process for unsigned open-source macOS apps.
+EOF
+)
+fi
+
 RELEASE_NOTES=$(cat <<EOF
 ## Narro $VERSION
 
 ### Installation
 1. Download \`Narro-${VERSION_NUMBER}-Universal.dmg\` below
 2. Open the DMG and drag Narro to your Applications folder
-3. Launch Narro from Applications
+3. Launch Narro from Applications$UNSIGNED_NOTICE
 
 ### Requirements
 - macOS 14.0 or later
@@ -218,13 +246,16 @@ echo "🔗 Release URL: https://github.com/d1egoaz/narro/releases/tag/$VERSION"
 echo ""
 
 if [ -n "$SKIP_SIGNING" ]; then
-    log_warning "This is an UNSIGNED build (development only)"
-    echo "   Users may see security warnings when opening the app."
+    echo "📝 Distribution Notes:"
+    echo "   • This is an unsigned build (no Apple Developer ID)"
+    echo "   • Users will need to right-click > Open on first launch"
+    echo "   • This is normal for open-source macOS apps"
+    echo "   • Release notes include installation instructions"
     echo ""
 fi
 
 echo "Next steps:"
 echo "1. Visit the release URL above to verify"
-echo "2. Test the download and installation"
+echo "2. Test the download and installation process"
 echo "3. Share the release with users!"
 echo ""

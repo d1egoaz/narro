@@ -149,11 +149,11 @@ For creating distributable DMG packages:
 
 #### Quick Local Build
 ```bash
-# Build DMG with code signing (requires Developer ID certificate)
-./scripts/build-dmg.sh
-
-# OR build without signing (for testing only)
+# Build unsigned DMG (default - no certificate needed)
 ./scripts/build-dmg.sh --skip-signing
+
+# OR build with code signing (requires Developer ID certificate)
+./scripts/build-dmg.sh
 ```
 
 #### Creating a Release
@@ -166,11 +166,11 @@ The simplest way to release Narro is using the automated release script:
 
 **Create a release:**
 ```bash
-# Build, tag, and release in one command
+# Build, tag, and release (unsigned by default)
 ./scripts/release.sh v1.2.0
 
-# Or without code signing (development builds)
-./scripts/release.sh v1.2.0 --skip-signing
+# Or with code signing (if you have a Developer ID certificate)
+./scripts/release.sh v1.2.0 --sign
 ```
 
 This script will:
@@ -179,8 +179,11 @@ This script will:
 3. Create a git tag and push it
 4. Create a GitHub release with the DMG attached
 5. Upload SHA-256 checksums for verification
+6. Include installation instructions for unsigned apps
 
 Users can then download the DMG directly from: `https://github.com/d1egoaz/narro/releases`
+
+**Note about unsigned builds:** Without an Apple Developer ID certificate ($99/year), apps are unsigned. Users will need to right-click > Open on first launch. This is standard for open-source macOS applications. The release notes automatically include instructions for users.
 
 ### Architecture
 
