@@ -205,8 +205,14 @@ public class DeviceManager: ObservableObject {
                 return
             }
         }
-        
-        // Fallback to first available device
+
+        // Fallback to system default device if no priorities set
+        if let defaultDevice = availableDevices.first(where: { $0.isDefault }) {
+            preferredDeviceID = defaultDevice.id
+            return
+        }
+
+        // Last resort: use first available device
         preferredDeviceID = availableDevices.first?.id
     }
     
