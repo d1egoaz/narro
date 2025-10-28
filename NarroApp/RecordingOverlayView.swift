@@ -24,6 +24,7 @@ struct RecordingOverlayView: View {
                 processingText
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
         .background(backgroundView)
@@ -97,7 +98,7 @@ struct RecordingOverlayView: View {
         isProcessing: false,
         audioLevel: 0.6
     )
-    .frame(width: 240, height: 52)
+    .frame(width: 280, height: 52)
     .padding(40)
     .background(Color.gray.opacity(0.3))
 }
@@ -108,7 +109,7 @@ struct RecordingOverlayView: View {
         isProcessing: true,
         audioLevel: 0.0
     )
-    .frame(width: 240, height: 52)
+    .frame(width: 280, height: 52)
     .padding(40)
     .background(Color.gray.opacity(0.3))
 }

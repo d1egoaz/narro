@@ -29,6 +29,7 @@ struct PreferencesView: View {
     // State for API key editing
     @State private var editingAPIKeys: [STTProviderType: String] = [:]
     @State private var showingTestInjectionView = false
+    @AppStorage("showRecordingOverlay") private var showRecordingOverlay = true
     
     var body: some View {
         TabView {
@@ -483,7 +484,7 @@ struct PreferencesView: View {
                             Image(systemName: appState.launchAtLoginManagerService.isEnabled ? "checkmark.circle.fill" : "circle")
                                 .foregroundColor(appState.launchAtLoginManagerService.isEnabled ? .green : .secondary)
                                 .font(.title2)
-                            
+
                             VStack(alignment: .leading, spacing: 4) {
                                 Text("Launch at Login")
                                     .font(.headline)
@@ -491,14 +492,38 @@ struct PreferencesView: View {
                                     .font(.caption)
                                     .foregroundColor(.secondary)
                             }
-                            
+
                             Spacer()
-                            
+
                             Toggle("", isOn: Binding(
                                 get: { appState.launchAtLoginManagerService.isEnabled },
                                 set: { appState.launchAtLoginManagerService.setEnabled($0) }
                             ))
                             .toggleStyle(.switch)
+                        }
+                    }
+                    .padding()
+                }
+
+                GroupBox("Recording Overlay") {
+                    VStack(alignment: .leading, spacing: 15) {
+                        HStack {
+                            Image(systemName: showRecordingOverlay ? "eye.fill" : "eye.slash")
+                                .foregroundColor(showRecordingOverlay ? .blue : .secondary)
+                                .font(.title2)
+
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("Show Floating Indicator")
+                                    .font(.headline)
+                                Text(showRecordingOverlay ? "A floating window shows recording status at the top of your screen" : "Recording status only shown in menu bar")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+
+                            Spacer()
+
+                            Toggle("", isOn: $showRecordingOverlay)
+                                .toggleStyle(.switch)
                         }
                     }
                     .padding()

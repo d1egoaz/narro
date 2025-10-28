@@ -17,6 +17,8 @@
 		1A8E3D471C8F4E1C00123464 /* AsyncExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A8E3D461C8F4E1C00123464 /* AsyncExtensions.swift */; };
 		1A8E3D481C8F4E1C00123465 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 1A8E3D471C8F4E1C00123465 /* KeychainAccess */; };
 		1A8E3D491C8F4E1C00123466 /* KeyboardShortcuts in Frameworks */ = {isa = PBXBuildFile; productRef = 1A8E3D481C8F4E1C00123466 /* KeyboardShortcuts */; };
+		68D715B2C9474B22AF3BD3DD /* RecordingOverlayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B7B1DE96E544EB19FE415EF /* RecordingOverlayController.swift */; };
+		83D97857486D4BEFBBAAADEE /* RecordingOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59B4A6AF378F47748AF616D1 /* RecordingOverlayView.swift */; };
 		CA2836602E69561900CA59D7 /* StreamingTranscriptionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA28365F2E69561900CA59D7 /* StreamingTranscriptionService.swift */; };
 		CA2836622E69561900CA59D7 /* PartialResultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA28365D2E69561900CA59D7 /* PartialResultsManager.swift */; };
 		CA2836632E69561900CA59D7 /* RestTranscriptionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA28365E2E69561900CA59D7 /* RestTranscriptionService.swift */; };
@@ -49,10 +51,12 @@
 		CA98AADF2E265823004C23D7 /* AudioLevelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA98AADE2E265823004C23D7 /* AudioLevelView.swift */; };
 		CAB662EB2E6EA3E4003C25AB /* AudioStreamingQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAB662EA2E6EA3E4003C25AB /* AudioStreamingQueue.swift */; };
 		CADFFC2B2E3DFEFC00C29988 /* LaunchAtLoginManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADFFC2A2E3DFEFC00C29988 /* LaunchAtLoginManager.swift */; };
+		FD0AB9197D914EB0A49DD2E0 /* RecordingOverlayWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15C357B95854415A544E443 /* RecordingOverlayWindow.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		1A8E3D262C8F4E1B00123456 /* VTS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VTS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0B7B1DE96E544EB19FE415EF /* RecordingOverlayController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingOverlayController.swift; sourceTree = "<group>"; };
+		1A8E3D262C8F4E1B00123456 /* Narro.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Narro.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A8E3D292C8F4E1B00123456 /* NarroApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NarroApp.swift; sourceTree = "<group>"; };
 		1A8E3D2B2C8F4E1B00123456 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		1A8E3D2D2C8F4E1C00123456 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -63,6 +67,8 @@
 		1A8E3D401C8F4E1C00123458 /* DeviceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceManager.swift; sourceTree = "<group>"; };
 		1A8E3D451C8F4E1C00123463 /* TranscriptionModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscriptionModels.swift; sourceTree = "<group>"; };
 		1A8E3D461C8F4E1C00123464 /* AsyncExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncExtensions.swift; sourceTree = "<group>"; };
+		59B4A6AF378F47748AF616D1 /* RecordingOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingOverlayView.swift; sourceTree = "<group>"; };
+		B15C357B95854415A544E443 /* RecordingOverlayWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingOverlayWindow.swift; sourceTree = "<group>"; };
 		CA28365D2E69561900CA59D7 /* PartialResultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartialResultsManager.swift; sourceTree = "<group>"; };
 		CA28365E2E69561900CA59D7 /* RestTranscriptionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestTranscriptionService.swift; sourceTree = "<group>"; };
 		CA28365F2E69561900CA59D7 /* StreamingTranscriptionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamingTranscriptionService.swift; sourceTree = "<group>"; };
@@ -106,7 +112,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CA886DB82E447A1A00256FE9 /* Sparkle in Frameworks */,
 				1A8E3D481C8F4E1C00123465 /* KeychainAccess in Frameworks */,
 				1A8E3D491C8F4E1C00123466 /* KeyboardShortcuts in Frameworks */,
 			);
@@ -126,7 +131,7 @@
 		1A8E3D272C8F4E1B00123456 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1A8E3D262C8F4E1B00123456 /* VTS.app */,
+				1A8E3D262C8F4E1B00123456 /* Narro.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -135,6 +140,9 @@
 			isa = PBXGroup;
 			children = (
 				CA98AADE2E265823004C23D7 /* AudioLevelView.swift */,
+				B15C357B95854415A544E443 /* RecordingOverlayWindow.swift */,
+				59B4A6AF378F47748AF616D1 /* RecordingOverlayView.swift */,
+				0B7B1DE96E544EB19FE415EF /* RecordingOverlayController.swift */,
 				CA98AADC2E264E60004C23D7 /* SimpleHotkeyManager.swift */,
 				CA98AAD82E261723004C23D7 /* SettingsWindowController.swift */,
 				1A8E3D292C8F4E1B00123456 /* NarroApp.swift */,
@@ -285,7 +293,7 @@
 				1A8E3D481C8F4E1C00123466 /* KeyboardShortcuts */,
 			);
 			productName = NarroApp;
-			productReference = 1A8E3D262C8F4E1B00123456 /* VTS.app */;
+			productReference = 1A8E3D262C8F4E1B00123456 /* Narro.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -296,7 +304,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1500;
-				LastUpgradeCheck = 1500;
+				LastUpgradeCheck = 2600;
 				TargetAttributes = {
 					1A8E3D252C8F4E1B00123456 = {
 						CreatedOnToolsVersion = 15.0;
@@ -346,6 +354,9 @@
 				CAB662EB2E6EA3E4003C25AB /* AudioStreamingQueue.swift in Sources */,
 				1A8E3D2A2C8F4E1B00123456 /* NarroApp.swift in Sources */,
 				CA98AADF2E265823004C23D7 /* AudioLevelView.swift in Sources */,
+				FD0AB9197D914EB0A49DD2E0 /* RecordingOverlayWindow.swift in Sources */,
+				83D97857486D4BEFBBAAADEE /* RecordingOverlayView.swift in Sources */,
+				68D715B2C9474B22AF3BD3DD /* RecordingOverlayController.swift in Sources */,
 				1A8E3D401C8F4E1C00123457 /* CaptureEngine.swift in Sources */,
 				1A8E3D411C8F4E1C00123458 /* DeviceManager.swift in Sources */,
 				CA2836762E69564800CA59D7 /* StreamingModels.swift in Sources */,
@@ -420,6 +431,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -444,6 +456,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -483,6 +496,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -500,6 +514,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 			};
 			name = Release;
@@ -514,8 +529,12 @@
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"NarroApp/Preview Content\"";
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = NarroApp/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -538,13 +557,20 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = NarroApp/NarroApp.entitlements;
-				CODE_SIGN_IDENTITY = "Developer ID Application";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"NarroApp/Preview Content\"";
 				DEVELOPMENT_TEAM = 887583966J;
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = "";
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = NarroApp/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";

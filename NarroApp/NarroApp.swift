@@ -186,6 +186,7 @@ class AppState: ObservableObject {
     private let hotkeyManager = SimpleHotkeyManager.shared
     private let notificationManager = NotificationManager.shared
     private let launchAtLoginManager = LaunchAtLoginManager.shared
+    private let recordingOverlayController = RecordingOverlayController()
     private var cancellables = Set<AnyCancellable>()
     
     private var settingsWindowController: SettingsWindowController?
@@ -372,7 +373,8 @@ class AppState: ObservableObject {
         setupStatusBar()
         setupGlobalHotkey()
         setupNotifications()
-        
+        setupRecordingOverlay()
+
         // Enable launch at login after completing onboarding and showing status bar
         // This ensures the app is fully configured before auto-launching
         launchAtLoginManager.enableAfterOnboarding()
@@ -435,7 +437,7 @@ class AppState: ObservableObject {
             await notificationManager.requestPermission()
             print("🔔 Notification permissions requested")
         }
-        
+
         // Setup notification action handlers
         notificationManager.onSettingsRequested = { [weak self] in
             Task { @MainActor in
@@ -443,7 +445,12 @@ class AppState: ObservableObject {
             }
         }
     }
-    
+
+    private func setupRecordingOverlay() {
+        // Connect the overlay controller to app state for reactive updates
+        recordingOverlayController.setup(with: self)
+    }
+
     private func setupTranscriptionServices() {
         // Only OpenAI is supported
         restTranscriptionService.setProvider(OpenAIRestProvider())

@@ -13,7 +13,7 @@ class RecordingOverlayWindow: NSWindow {
 
     init<Content: View>(contentView: Content) {
         // Calculate window size and position
-        let windowSize = NSSize(width: 240, height: 52)
+        let windowSize = NSSize(width: 280, height: 52)
 
         // Position at top center of main screen
         let screenFrame = NSScreen.main?.visibleFrame ?? .zero
@@ -50,10 +50,14 @@ class RecordingOverlayWindow: NSWindow {
         self.isMovable = false
         self.isMovableByWindowBackground = false
 
-        // Set up content view
+        // Set up content view with proper sizing
         let hostingView = NSHostingView(rootView: contentView)
-        hostingView.frame = self.contentView?.bounds ?? .zero
+        hostingView.autoresizingMask = [.width, .height]
         self.contentView = hostingView
+
+        // Set min and max content size to enforce our desired dimensions
+        self.contentMinSize = windowSize
+        self.contentMaxSize = windowSize
 
         // Initially hidden - controller will show when recording starts
         self.alphaValue = 0
