@@ -67,7 +67,7 @@ struct OnboardingCompletionStep: View {
                     QuickStartStep(
                         step: "1",
                         title: "Use your global hotkey",
-                        description: "Press ⌘⇧; (or your custom hotkey) to start recording",
+                        description: "Press ⌘G (or your custom hotkey) to start recording",
                         icon: "keyboard",
                         color: .blue
                     )
@@ -153,13 +153,13 @@ struct OnboardingCompletionStep: View {
     }
     
     private func openGitHubReadme() {
-        if let url = URL(string: "https://github.com/j05u3/Narro#readme") {
+        if let url = URL(string: "https://github.com/d1egoaz/narro#readme") {
             NSWorkspace.shared.open(url)
         }
     }
-    
+
     private func openGitHubIssues() {
-        if let url = URL(string: "https://github.com/j05u3/Narro/issues") {
+        if let url = URL(string: "https://github.com/d1egoaz/narro/issues") {
             NSWorkspace.shared.open(url)
         }
     }

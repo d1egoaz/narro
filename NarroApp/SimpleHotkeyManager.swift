@@ -4,7 +4,7 @@ import KeyboardShortcuts
 import Combine
 
 extension KeyboardShortcuts.Name {
-    static let toggleRecording = Self("toggleRecording", default: .init(.semicolon, modifiers: [.command, .shift]))
+    static let toggleRecording = Self("toggleRecording", default: .init(.g, modifiers: [.command]))
     static let copyLastTranscription = Self("copyLastTranscription", default: nil)
 }
 
@@ -16,7 +16,7 @@ public class SimpleHotkeyManager: ObservableObject {
     public static let shared = SimpleHotkeyManager()
     
     @Published public var isEnabled = false
-    @Published public var currentHotkeyString = "⌘⇧;" // Default fallback
+    @Published public var currentHotkeyString = "⌘G" // Default fallback
     @Published public var currentCopyHotkeyString = "⌥⌘⇧C" // Default fallback for copy
 
     public var onToggleRecording: (() -> Void)?

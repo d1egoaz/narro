@@ -7,7 +7,8 @@
 
 > 🍴 **Modified fork** of the original [VTS by Josue Julcarima](https://github.com/j05u3/VTS)
 >
-> **Narro** is streamlined for **OpenAI-only transcription** with hold-to-record and other improvements.
+
+**Narro** is streamlined for **OpenAI-only transcription** with hold-to-record and other improvements.
 
 ## Key Modifications
 
@@ -53,7 +54,7 @@ Transform your voice into text instantly with the power of **OpenAI** API. Say g
 - 🎤 **Hold-to-Record Mode**: New push-to-talk feature alongside traditional toggle mode
 - 🔑 **Your Keys, Your Control**: Bring your own API key - no subscriptions, no limits
 - 🔄 **Drop-in Replacement**: Works exactly like macOS dictation, but better!
-- ⌨️ **Your Shortcut, Your Rules**: Fully customizable global hotkeys (default: ⌘⇧;)
+- ⌨️ **Your Shortcut, Your Rules**: Fully customizable global hotkeys (default: ⌘G)
 - 🎯 **Smart Device Management**: Intelligent microphone priority with seamless fallback
 - 💬 **Context-Aware**: Custom system prompt boosts accuracy for your specific needs
 - 🌐 **English by Default**: Language detection set to English for better accuracy
@@ -74,7 +75,7 @@ After installing Narro, you'll need an OpenAI API key:
 ### Basic Transcription
 1. **Select Model**: Pick from whisper-1, gpt-4o-transcribe, or gpt-4o-mini-transcribe
 2. **Enter API Key**: Paste your OpenAI API key in the secure field
-3. **Start Recording**: Press the global hotkey (default: ⌘⇧;) and speak
+3. **Start Recording**: Press the global hotkey (default: ⌘G) and speak
 4. **View Results**: See real-time transcription inserted into the application you're using
 5. **(Optional) Copy**: Use buttons to copy the transcript
 
