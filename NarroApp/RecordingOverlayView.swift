@@ -98,7 +98,7 @@ struct RecordingOverlayView: View {
         isProcessing: false,
         audioLevel: 0.6
     )
-    .frame(width: 280, height: 52)
+    .frame(width: 220, height: 52)
     .padding(40)
     .background(Color.gray.opacity(0.3))
 }
@@ -109,7 +109,7 @@ struct RecordingOverlayView: View {
         isProcessing: true,
         audioLevel: 0.0
     )
-    .frame(width: 280, height: 52)
+    .frame(width: 220, height: 52)
     .padding(40)
     .background(Color.gray.opacity(0.3))
 }
