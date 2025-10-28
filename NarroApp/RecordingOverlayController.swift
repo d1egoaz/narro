@@ -69,37 +69,39 @@ class RecordingOverlayController {
 
     private func handleRecordingStateChange(isRecording: Bool) {
         guard showOverlay else { return }
+        updateView()
 
         if isRecording {
             // Recording started - show the overlay
-            updateView()
             overlayWindow?.show()
         } else {
-            // Recording stopped - keep visible if processing, otherwise hide
-            guard let appState = appState else { return }
-            if !appState.isProcessing {
-                overlayWindow?.hide()
-            } else {
-                updateView()
-            }
+            // Recording stopped - hide if nothing is active
+            checkAndHideIfIdle()
         }
     }
 
     private func handleProcessingStateChange(isProcessing: Bool) {
         guard showOverlay else { return }
-        guard let appState = appState else { return }
+        updateView()
 
         if isProcessing {
             // Processing started - show or keep visible
-            updateView()
             if overlayWindow?.alphaValue == 0 {
                 overlayWindow?.show()
             }
         } else {
-            // Processing finished - hide if not recording
-            if !appState.isRecording {
-                overlayWindow?.hide()
-            }
+            // Processing finished - hide if nothing is active
+            checkAndHideIfIdle()
+        }
+    }
+
+    /// Hide the overlay if both recording and processing are complete
+    private func checkAndHideIfIdle() {
+        guard let appState = appState else { return }
+
+        // Only hide if both states are false (nothing active)
+        if !appState.isRecording && !appState.isProcessing {
+            overlayWindow?.hide()
         }
     }
 
