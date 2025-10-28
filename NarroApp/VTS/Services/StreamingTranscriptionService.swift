@@ -225,6 +225,12 @@ public class StreamingTranscriptionService: ObservableObject {
     
     private func startPartialResultsProcessor(session: RealtimeSession) {
         Task { @MainActor in
+            // Ensure state is always cleared when processor exits
+            defer {
+                isTranscribing = false
+                isStreamingActive = false
+            }
+
             do {
                 for try await partialChunk in session.partialResultsStream {
                     // Process partial result through the manager
@@ -232,21 +238,20 @@ public class StreamingTranscriptionService: ObservableObject {
                     
                     if partialChunk.isFinal {
                         print("\(LogMessages.receivedFinalResult) '\(partialChunk.text)'")
-                        
+
                         // 🚀 IMMEDIATE TEXT INJECTION: Handle text injection as soon as we get final result
                         let finalTranscript = partialResults.getFinalTranscription()
                         if !finalTranscript.isEmpty {
                             handleSuccessfulTranscription(finalTranscript)
-
-                            // 🎯 IMMEDIATE UI UPDATE: Update transcription state immediately after text injection
-                            isTranscribing = false
-                            isStreamingActive = false
 
                             // 🔄 BACKGROUND CLEANUP: Start final cleanup in background
                             Task.detached { [weak self] in
                                 await self?.performBackgroundCleanup(provider: self?.provider, config: self?.currentConfig)
                             }
                         }
+
+                        // Break out of loop after final result - defer will clean up state
+                        break
                     } else {
                         print("\(LogMessages.receivedPartialResult) '\(partialChunk.text)'")
                     }

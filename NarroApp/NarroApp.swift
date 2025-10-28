@@ -466,13 +466,19 @@ class AppState: ObservableObject {
     }
     
     private func startRecording() {
+        // Prevent starting a new recording while still processing previous one
+        guard !isProcessing else {
+            print("Cannot start recording while still processing previous transcription")
+            return
+        }
+
         // Check if we have an API key for the selected provider
         guard apiKeyManager.hasAPIKey(for: selectedProvider) else {
             print("No API key configured for \(selectedProvider)")
             showAlert("API Key Required", "Please add an API key for \(selectedProvider.rawValue) in Settings to enable speech transcription.")
             return
         }
-        
+
         guard captureEngine.permissionGranted else {
             print("Microphone permission not granted")
             showAlert("Microphone Access Required", "Please grant microphone permission in System Preferences > Privacy & Security > Microphone to use Narro.")

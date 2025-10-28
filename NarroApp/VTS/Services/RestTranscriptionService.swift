@@ -99,6 +99,11 @@ public class RestTranscriptionService: ObservableObject {
         print("\(LogMessages.startingTranscription) \(provider.providerType)")
         
         transcriptionTask = Task { @MainActor in
+            // Ensure isTranscribing is always set to false when Task exits
+            defer {
+                isTranscribing = false
+            }
+
             do {
                 try provider.validateConfig(config)
                 print(LogMessages.configValidated)
@@ -112,21 +117,24 @@ public class RestTranscriptionService: ObservableObject {
 
                 // Store audio data for potential retry
                 self.currentAudioData = collectedData
-                
+
                 print("\(LogMessages.receivedResult) '\(transcriptionResult)'")
-                
+
                 // Trim whitespace
                 let finalText = transcriptionResult.trimmingCharacters(in: .whitespaces)
                 print("\(LogMessages.finalTextTrimmed) '\(finalText)'")
-                
+
                 // Update UI and inject text
                 handleSuccessfulTranscription(finalText)
 
                 print(LogMessages.transcriptionCompleted)
 
+                // Clear transcribing state immediately after successful completion
+                isTranscribing = false
+
                 // Clear retry context on success
                 clearRetryContext()
-                
+
             } catch {
                 print("\(LogMessages.transcriptionError) \(error)")
 
@@ -134,8 +142,6 @@ public class RestTranscriptionService: ObservableObject {
 
                 handleErrorWithNotification(sttError)
             }
-            
-            isTranscribing = false
         }
     }
     
