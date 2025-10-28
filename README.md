@@ -5,16 +5,15 @@
   <strong>The open-source macOS dictation app that lets you narrate your thoughts into text 🎙️</strong>
 </p>
 
-> 🍴 **This is a modified fork** of the original [VTS by Josue Julcarima](https://github.com/j05u3/VTS)
+> 🍴 **Modified fork** of the original [VTS by Josue Julcarima](https://github.com/j05u3/VTS)
 >
 > **Narro** is streamlined for **OpenAI-only transcription** with hold-to-record and other improvements.
 
-## Modifications in This Fork
+## Key Modifications
 
 ### ✂️ Removed
 - 🚫 Firebase Analytics (all telemetry removed)
-- 🚫 Groq provider support
-- 🚫 Deepgram provider support
+- 🚫 Groq and Deepgram provider support
 - 🚫 Sparkle auto-update system
 
 ### ✨ Added
@@ -28,43 +27,6 @@
 
 ---
 
-> **🔊 Turn on your sound!** This demo includes audio to showcase the real-time transcription experience.
-
-https://github.com/user-attachments/assets/bc77c14b-863c-418f-8564-175d6300ce2b
-
-<p align="center">
-  <strong>🚀 Sub-second dictation. BYO key. Types where your cursor is.</strong>
-</p>
-
----
-
-<p align="center">
-  <a href="https://github.com/d1egoaz/narro/releases/latest">
-    <img src="https://img.shields.io/badge/📦%20Download%20DMG-Latest%20Release-brightgreen?style=for-the-badge&logo=apple&logoColor=white&labelColor=000000&color=007ACC" alt="Download DMG" width="300">
-  </a>
-</p>
-
-<p align="center">
-  <!-- Social and Community Badges -->
-  <a href="https://github.com/d1egoaz/narro/stargazers"><img alt="GitHub Stars" src="https://img.shields.io/github/stars/d1egoaz/narro?style=for-the-badge&logo=github&color=gold"></a>
-  <a href="https://github.com/d1egoaz/narro/network/members"><img alt="GitHub Forks" src="https://img.shields.io/github/forks/d1egoaz/narro?style=for-the-badge&logo=github&color=blueviolet"></a>
-  <br>
-  <!-- Status and Release Badges -->
-  <a href="https://github.com/d1egoaz/narro/releases/latest"><img alt="Latest Release" src="https://img.shields.io/github/v/release/d1egoaz/narro?style=for-the-badge&color=brightgreen"></a>
-  <a href="https://github.com/d1egoaz/narro/releases"><img alt="GitHub Downloads" src="https://img.shields.io/github/downloads/d1egoaz/narro/total?style=for-the-badge&logo=github&color=success"></a>
-  <a href="https://opensource.org/licenses/MIT"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge"></a>
-  <br>
-  <!-- Development Activity Badges -->
-  <a href="https://github.com/d1egoaz/narro/actions/workflows/build-and-release.yml"><img alt="Build Status" src="https://img.shields.io/github/actions/workflow/status/d1egoaz/narro/build-and-release.yml?branch=main&style=for-the-badge&logo=githubactions"></a>
-  <a href="https://github.com/d1egoaz/narro/issues"><img alt="GitHub Issues" src="https://img.shields.io/github/issues/d1egoaz/narro?style=for-the-badge&logo=github&color=red"></a>
-  <a href="https://github.com/d1egoaz/narro/pulls"><img alt="GitHub Pull Requests" src="https://img.shields.io/github/issues-pr/d1egoaz/narro?style=for-the-badge&logo=github&color=yellow"></a>
-  <br>
-  <!-- Platform Badge -->
-  <a href="https://developer.apple.com/macos/"><img alt="Platform" src="https://img.shields.io/badge/platform-macOS%2014.0%2B-blue?style=for-the-badge&logo=apple"></a>
-</p>
-
----
-
 Transform your voice into text instantly with the power of **OpenAI** API. Say goodbye to macOS dictation limitations and hello to lightning-fast, accurate transcription with your own custom hotkeys! ⚡️
 
 ## 📋 Table of Contents
@@ -74,8 +36,6 @@ Transform your voice into text instantly with the power of **OpenAI** API. Say g
 - [Usage Guide](#-usage-guide)
   - [Basic Transcription](#basic-transcription)
   - [Advanced Features](#advanced-features)
-- [Longer Demo](#-longer-demo)
-- [Screenshots](#-screenshots)
 - [Privacy & Security](#-privacy--security)
 - [Troubleshooting](#%EF%B8%8F-troubleshooting)
 - [Development](#%E2%80%8D-development)
@@ -113,12 +73,11 @@ After installing Narro, you'll need an OpenAI API key:
 ## 📖 Usage Guide
 
 ### Basic Transcription
-1. **Choose Provider**: Select OpenAI, Groq, or Deepgram from the dropdown
-2. **Select Model**: Pick whisper-1, whisper-large-v3, or other available models
-3. **Enter API Key**: Paste your API key in the secure field
-4. **Start Recording**: Press the global hotkey (default: ⌘⇧;) and speak
-5. **View Results**: See real-time transcription inserted into the application you're using
-6. **(Optional) Copy**: Use buttons to copy the transcript
+1. **Select Model**: Pick from whisper-1, gpt-4o-transcribe, or gpt-4o-mini-transcribe
+2. **Enter API Key**: Paste your OpenAI API key in the secure field
+3. **Start Recording**: Press the global hotkey (default: ⌘⇧;) and speak
+4. **View Results**: See real-time transcription inserted into the application you're using
+5. **(Optional) Copy**: Use buttons to copy the transcript
 
 ### Advanced Features
 
@@ -133,21 +92,6 @@ After installing Narro, you'll need an OpenAI API key:
 - Add context-specific prompts to improve transcription accuracy
 - Examples: "Medical terminology", "Technical jargon", "Names: John, Sarah, Mike"
 - Prompts help the AI better understand domain-specific language
-
-## 🎬 Longer Demo
-
-https://github.com/user-attachments/assets/f69c365a-4f1a-42f1-b2de-66d61643fea0
-
-Getting started in 34 seconds:
-
-[![Getting started in 34 seconds](https://img.youtube.com/vi/NTQmVCvkZQQ/0.jpg)](https://www.youtube.com/watch?v=NTQmVCvkZQQ)
-
-
-## 📷 Screenshots
-
-<img width="350" alt="image" src="https://github.com/user-attachments/assets/57fdf28d-120e-4bfb-9dfd-5413e7c65127" /> <img width="350" alt="image" src="https://github.com/user-attachments/assets/d165c874-9df4-41af-b49d-f4220896d699" />
- <img width="350" alt="image" src="https://github.com/user-attachments/assets/b7aacf73-842a-4292-9418-d9fb7df13eee" />
-
 
 ## 🔒 Privacy & Security
 
@@ -173,7 +117,7 @@ Getting started in 34 seconds:
 ### Development Requirements
 - **macOS 14.0+** (Apple Silicon & Intel supported)
 - **Xcode 15+** for building
-- **API key** from OpenAI, Groq, or Deepgram for testing
+- **OpenAI API key** for testing
 
 ### Building from Source
 
@@ -233,39 +177,6 @@ Automated unit tests are planned for future releases.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to contribute to Narro development.
 
----
-
-## 🗺️ Roadmap
-
-- [x] **Auto-open at login**: Auto-open at login with checkbox in the preferences window (✅ Implemented)
-- [x] **Modern Release Automation**: Automated releases with release-please and GitHub Actions (✅ Implemented)
-- [x] **Sparkle Auto-Updates**: Automatic app updates with GitHub Releases appcast hosting (✅ Implemented)
-- [x] **Support real-time API**: OpenAI Real-time Transcription API (✅ Implemented)
-- [ ] **Per-app prompt**: Be able to customize the prompts in a per-app basis.
-
-
-### In a future or maybe pro version, to be decided/ordered by priority, your feedback and contributions are welcome!
-
-- [ ] **More models/providers**: Support for more STT providers like Google, Azure, etc.
-- [ ] **Safe auto-cut**: Auto-cut to maximum time if the user forgets to end (or accidentally starts). But also we could use VAD from real-time APIs?
-- [ ] **LLM step**: Use LLM to process the transcription and improve accuracy, maybe targetted to the app you're using or context in general. (Be able to easily input emojis?). I mean apply transformations based on the app you're injecting text to.
-- [ ] **Advanced Audio Processing**: Noise reduction and gain control, but also some STT providers can do this so maybe not needed?
-- [ ] **Comprehensive Test Suite**: Automated unit tests covering:
-  - Core transcription functionality
-  - Provider validation and error handling  
-  - Device management and priority logic
-  - Integration flows and edge cases
-- [ ] **Accessibility Features**
-
-## 💬 Feedback
-
-Have feedback, suggestions, or issues? We'd love to hear from you!
-
-You can:
-- 🐛 [Report bugs or request features](https://github.com/d1egoaz/narro/issues) on GitHub
-- 💡 Share your ideas for improvements
-- ⭐ Star the project if you find it useful!
-
 ## 📄 License
 
 MIT License - see [LICENSE](LICENSE) file for details.
@@ -273,14 +184,4 @@ MIT License - see [LICENSE](LICENSE) file for details.
 ## 🙏 Acknowledgements
 
 Narro wouldn't be possible without the incredible work of the open-source community. Special thanks to:
-
-### Tools & Scripts
-- [ios-icon-generator](https://github.com/smallmuou/ios-icon-generator) by @smallmuou - for the awesome icon generation script that made creating our app icons effortless
-- [create-dmg](https://github.com/sindresorhus/create-dmg) by @sindresorhus - for the excellent DMG creation script that streamlines our distribution process
 - Original [VTS](https://github.com/j05u3/VTS) by Josue Julcarima - the foundation for this fork
-
-**Note**: This project builds upon the work of many developers and projects. If I've missed crediting someone or something I sincerely apologize! Please feel free to open an issue or PR to help me give proper recognition where it's due.
-
----
-
-**Made with ❤️ for the macOS community**
