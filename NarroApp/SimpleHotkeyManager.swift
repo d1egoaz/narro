@@ -273,11 +273,9 @@ public class SimpleHotkeyManager: ObservableObject {
         print("  Recording Hotkey: \(currentHotkeyString)")
         print("  Copy Last Transcription: \(currentCopyHotkeyString)")
 
-        // Always clear existing handlers first to ensure clean state
-        print("  Clearing existing handlers...")
-        KeyboardShortcuts.onKeyDown(for: .toggleRecording) {}
-        KeyboardShortcuts.onKeyUp(for: .toggleRecording) {}
-        KeyboardShortcuts.onKeyDown(for: .copyLastTranscription) {}
+        // Remove any previously registered handlers to prevent duplicates
+        print("  Removing existing handlers...")
+        KeyboardShortcuts.removeAllHandlers()
 
         // Register the recording hotkey handler based on mode
         print("  Setting up \(mode.rawValue) mode handlers...")
@@ -318,10 +316,8 @@ public class SimpleHotkeyManager: ObservableObject {
 
         print("Unregistering global hotkey")
 
-        // Clear all keyboard shortcut handlers by setting them to empty closures
-        KeyboardShortcuts.onKeyDown(for: .toggleRecording) {}
-        KeyboardShortcuts.onKeyUp(for: .toggleRecording) {}
-        KeyboardShortcuts.onKeyDown(for: .copyLastTranscription) {}
+        // Remove all handlers for our shortcuts
+        KeyboardShortcuts.removeAllHandlers()
 
         isEnabled = false
 

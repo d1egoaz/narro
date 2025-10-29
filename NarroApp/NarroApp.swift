@@ -214,7 +214,7 @@ class AppState: ObservableObject {
             saveUseRealtime()
         }
     }
-    @Published var recordingMode: RecordingMode = .toggle
+    @Published var recordingMode: RecordingMode = .hold
     @Published var isRecording = false
     @Published var isProcessing = false
     @Published var audioLevel: Float = 0.0
@@ -472,6 +472,12 @@ class AppState: ObservableObject {
     }
     
     private func startRecording() {
+        // Prevent duplicate start requests while already recording
+        guard !isRecording else {
+            print("Already recording - ignoring start request")
+            return
+        }
+
         // Prevent starting a new recording while still processing previous one
         guard !isProcessing else {
             print("Cannot start recording while still processing previous transcription")
@@ -491,6 +497,14 @@ class AppState: ObservableObject {
             return
         }
         
+        var didBeginTranscription = false
+        isProcessing = true
+        defer {
+            if !didBeginTranscription {
+                isProcessing = false
+            }
+        }
+
         do {
             print("Starting audio capture...")
 
@@ -531,6 +545,7 @@ class AppState: ObservableObject {
                 )
             }
             
+            didBeginTranscription = true
             isRecording = true
             statusBarController.updateRecordingState(true)
 
