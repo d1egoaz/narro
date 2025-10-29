@@ -267,14 +267,20 @@ public class SimpleHotkeyManager: ObservableObject {
     }
     
     public func registerHotkey(mode: RecordingMode = .toggle) {
-        guard !isEnabled else { return }
-
         print("Registering global hotkeys:")
+        print("  Previous state: \(isEnabled ? "enabled" : "disabled")")
         print("  Recording Mode: \(mode.rawValue)")
         print("  Recording Hotkey: \(currentHotkeyString)")
         print("  Copy Last Transcription: \(currentCopyHotkeyString)")
 
+        // Always clear existing handlers first to ensure clean state
+        print("  Clearing existing handlers...")
+        KeyboardShortcuts.onKeyDown(for: .toggleRecording) {}
+        KeyboardShortcuts.onKeyUp(for: .toggleRecording) {}
+        KeyboardShortcuts.onKeyDown(for: .copyLastTranscription) {}
+
         // Register the recording hotkey handler based on mode
+        print("  Setting up \(mode.rawValue) mode handlers...")
         switch mode {
         case .toggle:
             // Toggle mode: press once to start, press again to stop
@@ -282,6 +288,7 @@ public class SimpleHotkeyManager: ObservableObject {
                 print("Global recording hotkey pressed (toggle mode)!")
                 self?.onToggleRecording?()
             }
+            // onKeyUp is already cleared above, leaving it empty for toggle mode
         case .hold:
             // Hold mode: press to start, release to stop
             KeyboardShortcuts.onKeyDown(for: .toggleRecording) { [weak self] in
@@ -308,12 +315,16 @@ public class SimpleHotkeyManager: ObservableObject {
     
     public func unregisterHotkey() {
         guard isEnabled else { return }
-        
+
         print("Unregistering global hotkey")
-        
-        // KeyboardShortcuts handles cleanup automatically
+
+        // Clear all keyboard shortcut handlers by setting them to empty closures
+        KeyboardShortcuts.onKeyDown(for: .toggleRecording) {}
+        KeyboardShortcuts.onKeyUp(for: .toggleRecording) {}
+        KeyboardShortcuts.onKeyDown(for: .copyLastTranscription) {}
+
         isEnabled = false
-        
+
         print("Global hotkey unregistered successfully")
     }
 } 

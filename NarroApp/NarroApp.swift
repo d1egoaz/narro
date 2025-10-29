@@ -214,16 +214,7 @@ class AppState: ObservableObject {
             saveUseRealtime()
         }
     }
-    @Published var recordingMode: RecordingMode = .toggle {
-        didSet {
-            saveRecordingMode()
-            // Re-register hotkeys with the new mode if app is initialized
-            if isMainAppInitialized {
-                hotkeyManager.unregisterHotkey()
-                hotkeyManager.registerHotkey(mode: recordingMode)
-            }
-        }
-    }
+    @Published var recordingMode: RecordingMode = .toggle
     @Published var isRecording = false
     @Published var isProcessing = false
     @Published var audioLevel: Float = 0.0
@@ -367,8 +358,23 @@ class AppState: ObservableObject {
                 self?.objectWillChange.send()
             }
             .store(in: &cancellables)
+
+        // Observe recording mode changes and re-register hotkeys
+        $recordingMode
+            .dropFirst() // Skip initial value
+            .sink { [weak self] mode in
+                guard let self = self else { return }
+                print("🔄 Recording mode changed to: \(mode.rawValue)")
+                self.saveRecordingMode()
+                if self.isMainAppInitialized {
+                    print("🔄 Re-registering hotkeys with new mode...")
+                    self.hotkeyManager.registerHotkey(mode: mode)
+                    print("🔄 Hotkey re-registration complete")
+                }
+            }
+            .store(in: &cancellables)
     }
-    
+
     private func initializeAfterLaunch() {
         setupStatusBar()
         setupGlobalHotkey()
