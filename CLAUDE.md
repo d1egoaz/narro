@@ -8,22 +8,57 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Build Commands
 
-### Development Build
-```bash
-# Open in Xcode
-open NarroApp.xcodeproj
+### Quick Development Workflow
 
-# Build via command line (Debug configuration)
+```bash
+# Build Debug configuration
 xcodebuild -project NarroApp.xcodeproj -scheme NarroApp -configuration Debug build
 
-# Build and copy to ~/Applications for testing
-xcodebuild -project NarroApp.xcodeproj -scheme NarroApp -configuration Debug build && \
-  cp -R ~/Library/Developer/Xcode/DerivedData/NarroApp-*/Build/Products/Debug/Narro.app ~/Applications/
+# Build Release configuration (faster, optimized)
+xcodebuild -project NarroApp.xcodeproj -scheme NarroApp -configuration Release build
+
+# Find the built app (DerivedData location)
+find ~/Library/Developer/Xcode/DerivedData/NarroApp-*/Build/Products -name "Narro.app" -type d | head -1
+```
+
+### Build, Move, and Run
+
+```bash
+# Complete workflow: Build Release, copy to ~/Applications, and launch
+xcodebuild -project NarroApp.xcodeproj -scheme NarroApp -configuration Release build && \
+  cp -R ~/Library/Developer/Xcode/DerivedData/NarroApp-*/Build/Products/Release/Narro.app ~/Applications/ && \
+  open ~/Applications/Narro.app
+
+# Stop, rebuild, deploy, and restart (for testing changes)
+killall Narro 2>/dev/null; \
+  xcodebuild -project NarroApp.xcodeproj -scheme NarroApp -configuration Release build && \
+  cp -R ~/Library/Developer/Xcode/DerivedData/NarroApp-*/Build/Products/Release/Narro.app ~/Applications/ && \
+  open ~/Applications/Narro.app
+```
+
+### Running and Debugging
+
+```bash
+# Launch app normally (background process)
+open ~/Applications/Narro.app
+
+# Stop the running app
+killall Narro
+
+# Run with full console output (see all print() statements)
+~/Applications/Narro.app/Contents/MacOS/Narro 2>&1
+
+# Run with filtered output (only show specific patterns)
+~/Applications/Narro.app/Contents/MacOS/Narro 2>&1 | grep -E "🔄|Registering|Recording mode|error"
+
+# Check if app is running
+ps aux | grep -i "[N]arro"
 ```
 
 ### Release Build
+
 ```bash
-# Build Release configuration
+# Build Release configuration with clean
 xcodebuild -project NarroApp.xcodeproj -scheme NarroApp -configuration Release clean build
 
 # Create unsigned DMG (no Developer ID certificate needed)
@@ -33,10 +68,15 @@ xcodebuild -project NarroApp.xcodeproj -scheme NarroApp -configuration Release c
 ./scripts/release.sh v1.x.x
 ```
 
-### Running from Command Line (for debugging)
+### Xcode GUI
+
 ```bash
-# Launch app and see console output including print() statements
-/Users/diego.albeiroalvarezzuluag/Applications/Narro.app/Contents/MacOS/Narro 2>&1
+# Open in Xcode
+open NarroApp.xcodeproj
+
+# Build: ⌘B
+# Run: ⌘R
+# Clean: ⌘⇧K
 ```
 
 ## Architecture
