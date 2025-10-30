@@ -198,17 +198,13 @@ Currently manual testing only. Key test scenarios:
 
 ## Version Management
 
-Version is stored in **two locations** and must be kept in sync:
-
-1. **`version.txt`** - Root directory version file (e.g., "1.4.0")
-2. **`NarroApp/Info.plist`** - Bundle version metadata:
-   - `CFBundleShortVersionString`: Display version (e.g., "1.4.0")
-   - `CFBundleVersion`: Build version (typically same as short version)
+Version is stored in `NarroApp/Info.plist`:
+- `CFBundleShortVersionString`: Display version (e.g., "1.4.0")
+- `CFBundleVersion`: Build version (typically same as short version)
 
 Update via:
 ```bash
-# Manual - update both files
-echo "1.x.x" > version.txt
+# Manual
 /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString 1.x.x" NarroApp/Info.plist
 /usr/libexec/PlistBuddy -c "Set :CFBundleVersion 1.x.x" NarroApp/Info.plist
 
