@@ -199,7 +199,7 @@ Currently manual testing only. Key test scenarios:
 ## Version Management
 
 Version is stored in `NarroApp/Info.plist`:
-- `CFBundleShortVersionString`: Display version (e.g., "1.3.0")
+- `CFBundleShortVersionString`: Display version (e.g., "1.4.0")
 - `CFBundleVersion`: Build version (typically same as short version)
 
 Update via:
