@@ -21,6 +21,7 @@ BUNDLE_ID="${BUNDLE_ID:-"ca.diegoa.narro"}"
 SCHEME="NarroApp"
 PROJECT="NarroApp.xcodeproj"
 PRODUCT_NAME="${PRODUCT_NAME:-"Narro"}"
+ENTITLEMENTS_PATH="${ENTITLEMENTS_PATH:-"NarroApp/NarroApp.entitlements"}"
 APPLE_TEAM_ID="${APPLE_TEAM_ID:-""}"
 
 # Global variables
@@ -206,6 +207,39 @@ clean_build() {
     log_success "Build directory cleaned"
 }
 
+# For unsigned builds we still need an ad-hoc signature so macOS privacy
+# permissions (microphone, accessibility) can be granted.
+sign_app_for_permissions() {
+    local app_path="$1"
+
+    if [ "$SKIP_SIGNING" != "true" ]; then
+        return
+    fi
+
+    if [ ! -d "$app_path" ]; then
+        log_error "Cannot sign app for permissions; bundle not found at $app_path"
+        exit 1
+    fi
+
+    if [ ! -f "$ENTITLEMENTS_PATH" ]; then
+        log_error "Entitlements file not found at $ENTITLEMENTS_PATH"
+        exit 1
+    fi
+
+    log_info "Applying ad-hoc code signature so macOS privacy permissions work..."
+    if ! codesign --force --deep --sign - --entitlements "$ENTITLEMENTS_PATH" "$app_path"; then
+        log_error "Failed to apply ad-hoc code signature"
+        exit 1
+    fi
+
+    if codesign --verify --verbose "$app_path" 2>/dev/null; then
+        log_success "Ad-hoc signature applied with entitlements"
+    else
+        log_error "codesign verification failed after ad-hoc signing"
+        exit 1
+    fi
+}
+
 # Build the application
 build_app() {
     log_info "Building universal binary..."
@@ -299,6 +333,8 @@ build_app() {
         log_warning "Could not verify binary architecture"
     fi
     
+    sign_app_for_permissions "$app_path"
+
     log_success "Application export completed"
 }
 
