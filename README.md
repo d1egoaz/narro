@@ -5,6 +5,17 @@
   <strong>The open-source macOS dictation app that lets you narrate your thoughts into text 🎙️</strong>
 </p>
 
+# NOTE:
+https://spokenly.app/
+
+
+
+***************************************************************************************************
+> [!WARNING]
+> I am not working on this anymore; I just use this one; it's free and in the Apple Store. https://spokenly.app/
+***************************************************************************************************
+
+
 > 🍴 **Modified fork** of the original [VTS by Josue Julcarima](https://github.com/j05u3/VTS)
 >
 
